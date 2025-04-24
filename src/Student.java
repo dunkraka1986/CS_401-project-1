@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Student {
-	ArrayList<Course> enrolledCourses = new ArrayList<Course>();
-	ArrayList<Hold> Holds = new ArrayList<Hold>();
-	double balance;
+	private ArrayList<Course> enrolledCourses = new ArrayList<Course>();
+	private ArrayList<Hold> Holds = new ArrayList<Hold>();
+	private double balance;
 }
