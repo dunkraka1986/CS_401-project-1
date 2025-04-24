@@ -36,7 +36,6 @@ The College Enrollment System is a Java-based desktop application that facilitat
 ## 🗂️ Folder Structure
 <pre>
 CollegeEnrollmentSystem/
-├── src
 ├── College Enrollment System - Software Design Document/     
 ├── College Enrollment System - Software Requirements Specification/     
 ├── Gantt Chart/         
