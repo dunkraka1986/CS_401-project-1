@@ -10,7 +10,7 @@ public class Course {
 	private ArrayList<Student> enrolledStudents;
 	
 	public Course() {
-		this.id = 0;
+		this.courseID = 0;
 		this.title = null;
 		this.description = null;
 		this.capacity = 0;
@@ -19,7 +19,7 @@ public class Course {
 	}
 	
 	public Course(String title, String description, int capacity, ArrayList<Course> prerequisites) {
-		this.id = ++uniqueId;
+		this.courseID = ++uniqueId;
 		this.title = title;
 		this.description = description;
 		this.capacity = capacity;
@@ -46,7 +46,7 @@ public class Course {
 		boolean full = false;
 		
 		// logic to check if course is full
-		if (this.capacity >= this.enrolledStudents.length()) {
+		if (this.capacity >= this.enrolledStudents.size()) {
 			full = true;
 		}
 		
