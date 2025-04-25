@@ -1,20 +1,30 @@
+import java.util.ArrayList;
 
 public class Course {
-	// attributes
-	private String courseID;
-	static private int courseCount = 0;
+	static private int uniqueId = 0;
+	private int courseID;
 	private String title;
+	private String description;
 	private int capacity;
-	private String[] prerequisites;
-	private Students[] enrolledStudents;
-	private Waitlist waitlist;
+	private ArrayList<Course> prerequisites;
+	private ArrayList<Student> enrolledStudents;
 	
 	public Course() {
-		this.courseID = "" + courseCount++;
-		this.capacity = 30; // default class size
-		this.enrolledStudents = new Students[this.capacity];
+		this.id = 0;
+		this.title = null;
+		this.description = null;
+		this.capacity = 0;
+		this.prerequisites = new ArrayList<Course>();
+		this.enrolledStudents = new ArrayList<Student>();
 	}
 	
+	public Course(String title, String description, int capacity, ArrayList<Course> prerequisites) {
+		this.id = ++uniqueId;
+		this.title = title;
+		this.description = description;
+		this.capacity = capacity;
+		this.prerequisites = prerequisites;
+	}
 	// methods
 	public boolean addStudent(Student student) {
 		boolean added = false;
