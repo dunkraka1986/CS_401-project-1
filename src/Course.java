@@ -68,6 +68,10 @@ public class Course {
 		this.units = unit;
 	}
 	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 	public String getTitle() {
 		return this.title;
 	}
@@ -78,5 +82,9 @@ public class Course {
 	
 	public int getUnits() {
 		return this.units;
+	}
+	
+	public String getDescription() {
+		return this.description;
 	}
 }
