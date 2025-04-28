@@ -26,12 +26,17 @@ public class Course {
 		this.capacity = capacity;
 		this.units = units;
 		this.prerequisites = prerequisites;
+		this.enrolledStudents = new ArrayList<Student>();
 	}
 	// methods
 	public boolean addStudent(Student student) {
 		boolean added = false;
 		
-		// logic to add student
+		// if enrolled students is not full then add, else return false and dont add
+		if (!this.isFull()) {
+			this.enrolledStudents.add(student);
+			added = true;
+		}
 		
 		return added;
 	}
@@ -39,7 +44,8 @@ public class Course {
 	public boolean removeStudent(Student student) {
 		boolean removed = false;
 		
-		// logic to remove student
+		// changes to true if removed, false if not found or not removed
+		removed = this.enrolledStudents.remove(student);
 		
 		return removed;
 	}
