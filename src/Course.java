@@ -7,7 +7,7 @@ public class Course {
 	private String description;
 	private int capacity;
 	private int units;
-	private ArrayList<Course> prerequisites;
+	private ArrayList<String> prerequisites;
 	private ArrayList<Student> enrolledStudents;
 	
 	public Course() {
@@ -15,11 +15,11 @@ public class Course {
 		this.title = null;
 		this.description = null;
 		this.capacity = 0;
-		this.prerequisites = new ArrayList<Course>();
+		this.prerequisites = new ArrayList<String>();
 		this.enrolledStudents = new ArrayList<Student>();
 	}
 	
-	public Course(String title, String description, int capacity, int units, ArrayList<Course> prerequisites) {
+	public Course(String title, String description, int capacity, int units, ArrayList<String> prerequisites) {
 		this.courseID = ++uniqueId;
 		this.title = title;
 		this.description = description;
