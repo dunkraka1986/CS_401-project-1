@@ -95,6 +95,10 @@ public class Course {
 		this.description = description;
 	}
 	
+	public int getCourseID() {
+		return this.courseID;
+	}
+	
 	public String getTitle() {
 		return this.title;
 	}
