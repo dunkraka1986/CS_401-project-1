@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Course {
@@ -59,6 +60,22 @@ public class Course {
 		}
 		
 		return full;
+	}
+	
+	public void addPrerequisite(String prerequisite) {
+		try {
+			this.prerequisites.add(prerequisite);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void removePrerequisite(String prerequisite) {
+		try {
+			this.prerequisites.remove(prerequisite);
+		} catch (IOException e) {
+			
+		}
 	}
 	
 	// getters and setters
