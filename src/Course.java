@@ -10,6 +10,7 @@ public class Course {
 	private int units;
 	private ArrayList<String> prerequisites;
 	private ArrayList<Student> enrolledStudents;
+	private ArrayList<Student> waitlistedStudents;
 	
 	public Course() {
 		this.courseID = 0;
@@ -75,6 +76,22 @@ public class Course {
 			this.prerequisites.remove(prerequisite);
 		} catch (IOException e) {
 			
+		}
+	}
+	
+	public void addToWaitlist(Student student) {
+		try {
+			this.waitlistedStudents.add(student);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeFromWaitlist(Student student) {
+		try {
+			this.waitlistedStudents.remove(student);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
