@@ -76,11 +76,7 @@ public class Course {
 	}
 	
 	public void removeFromWaitlist(Student student) {
-		try {
-			this.waitlistedStudents.remove(student);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.waitlistedStudents.remove(student);
 	}
 	
 	// getters and setters
