@@ -1,5 +1,7 @@
 import java.io.Serializable;
 
+enum Role {STUDENT, ADMIN}
+
 public abstract class User implements Serializable {
 	protected String id; 
 	protected String name; 
@@ -19,7 +21,7 @@ public abstract class User implements Serializable {
     	return name; 
 	} 
     
-    public abstract String getRole(); 
+    public abstract Role getRole(); 
  
     public boolean authenticate(String pw) { 
         return this.password.equals(pw); 

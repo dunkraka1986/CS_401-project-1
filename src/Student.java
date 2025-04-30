@@ -11,8 +11,8 @@ public class Student extends User{
         super(id, name, password);
     }
 	
-	public String getRole() {
-		return "Student";
+	public Role getRole() {
+		return Role.STUDENT;
 	}
 	
 	public void addCourse(Course course) {

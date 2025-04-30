@@ -64,27 +64,15 @@ public class Course {
 	}
 	
 	public void addPrerequisite(String prerequisite) {
-		try {
-			this.prerequisites.add(prerequisite);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.prerequisites.add(prerequisite);
 	}
 	
 	public void removePrerequisite(String prerequisite) {
-		try {
-			this.prerequisites.remove(prerequisite);
-		} catch (IOException e) {
-			
-		}
+		this.prerequisites.remove(prerequisite);
 	}
 	
 	public void addToWaitlist(Student student) {
-		try {
-			this.waitlistedStudents.add(student);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.waitlistedStudents.add(student);
 	}
 	
 	public void removeFromWaitlist(Student student) {
