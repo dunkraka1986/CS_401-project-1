@@ -18,7 +18,11 @@ public class University {
 		this.title = title;
 	}
 	
-	public void addStudent() {
-		
+	public void addStudent(Student student) {
+		students.add(student);
+	}
+	
+	public void removeStudent(Student student) {
+		students.remove(student);
 	}
 }
