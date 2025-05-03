@@ -1,3 +1,8 @@
+package Server;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Student extends User{
@@ -7,8 +12,8 @@ public class Student extends User{
 	private double balance;
 	private int unitCap = 18;
 	
-	public Student(String id, String name, String password) { 
-        super(id, name, password);
+	public Student(String name, String password) { 
+        super(name, password);
     }
 	
 	public Role getRole() {
@@ -71,4 +76,27 @@ public class Student extends User{
 		
         return maxUnit <= unitCap; 
     }
+	
+	public void save() {
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+			
+			writer.write(name + "," + password);
+			writer.newLine();
+			
+			for(int i = 0; i < enrolledCourses.size(); i++) {
+				writer.write(enrolledCourses.get(i).toString());
+			    writer.newLine();
+			}
+			
+			writer.close();
+		    
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String toString() {
+		return name + "," + password;
+	}
 }

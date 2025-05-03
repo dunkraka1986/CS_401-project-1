@@ -1,3 +1,5 @@
+package Server;
+
 import java.util.*;
 
 public class University {
