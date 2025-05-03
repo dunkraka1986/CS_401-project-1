@@ -1,6 +1,7 @@
 package common;
 
 public enum Type {
+	CONNECT,
 	REGISTER,
 	LOGIN,
 	TEXT,

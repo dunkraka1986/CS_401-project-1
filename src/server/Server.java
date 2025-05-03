@@ -81,7 +81,7 @@ class Server {
 	                		handleRegister(message);
 	                		break;
 	                
-	                    case LOGIN:
+	                    case CONNECT:
 	                    	System.out.println("Received login request.");
 	                        loggedIn = true;
 	                        Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Welcome!");
@@ -136,6 +136,5 @@ class Server {
 			student.save();
 			
 		}
-		
 	}
 }
