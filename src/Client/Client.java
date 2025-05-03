@@ -3,9 +3,6 @@ package Client;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import common.Message;
-import common.Type;
-import common.Status;
 
 class Client {
 	
@@ -28,10 +25,7 @@ class Client {
             
             while (true) {
                 System.out.print("Enter message (or 'logout' to exit): ");
-                System.out.println("Enter name: ");
                 String input = scanner.nextLine();
-                System.out.println("Enter password: ");
-                String password = scanner.nextLine();
 
                 if (input.equalsIgnoreCase("logout")) {
                     Message logoutMsg = new Message(Type.LOGOUT, Status.NULL, "");
@@ -41,9 +35,10 @@ class Client {
                     break;
                 }
 
-                String student = input + "," + password;
-                Message textMsg = new Message(Type.REGISTER, Status.NULL, student);
+                Message textMsg = new Message(Type.TEXT, Status.NULL, input);
                 out.writeObject(textMsg);
+                Message serverResponse = (Message) in.readObject();
+                System.out.println("Server response: " + serverResponse.getText());
             }
 
 			

@@ -1,6 +1,8 @@
 package Server;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Student extends User{
@@ -76,31 +78,23 @@ public class Student extends User{
     }
 	
 	public void save() {
-	    try {
-	        String folder = "data/";
-	        File dir = new File(folder);
-	        if (!dir.exists()) {
-	            if (dir.mkdirs()) {
-	            } else {
-	            }
-	        }
-
-	        BufferedWriter writer = new BufferedWriter(new FileWriter(folder + name));
-	        writer.write(name + "," + password);
-	        writer.newLine();
-
-	        for (int i = 0; i < enrolledCourses.size(); i++) {
-	            writer.write(enrolledCourses.get(i).toString());
-	            writer.newLine();
-	        }
-
-	        writer.close();
-	        System.out.println("Saved file to " + folder + name);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(name));
+			
+			writer.write(name + "," + password);
+			writer.newLine();
+			
+			for(int i = 0; i < enrolledCourses.size(); i++) {
+				writer.write(enrolledCourses.get(i).toString());
+			    writer.newLine();
+			}
+			
+			writer.close();
+		    
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-
 	
 	public String toString() {
 		return name + "," + password;
