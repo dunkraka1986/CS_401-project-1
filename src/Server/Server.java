@@ -2,9 +2,6 @@ package Server;
 
 import java.io.*;
 import java.net.*;
-import common.Message;
-import common.Type;
-import common.Status;
 
 class Server {
 	
@@ -81,10 +78,6 @@ class Server {
 	                		break;
 	                
 	                    case LOGIN:
-	                    	System.out.println("Received login request.");
-	                        loggedIn = true;
-	                        Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Welcome!");
-	                        out.writeObject(loginResponse);
 	                        break;
 	
 	                    case Type.TEXT:
@@ -119,9 +112,6 @@ class Server {
 		}
 		
 		private void handleRegister(Message message) {
-			
-			System.out.println("Received registration request.");
-			
 			String info = message.getText();
 			
 			String[] parts = info.split(",");
@@ -132,7 +122,6 @@ class Server {
 			
 			uni.addStudent(student);
 			
-			student.save();
 			
 		}
 		
