@@ -21,7 +21,7 @@ class Client {
 
 			Scanner scanner = new Scanner(System.in);
 
-			Message loginMsg = new Message(Type.LOGIN, Status.NULL, "Logging in...");
+			Message loginMsg = new Message(Type.CONNECT, Status.NULL, "Logging in...");
             out.writeObject(loginMsg);
             Message response = (Message) in.readObject();
             System.out.println("Server: " + response.getText());
