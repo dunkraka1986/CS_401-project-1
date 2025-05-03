@@ -1,7 +1,12 @@
+package Server;
+
 import java.io.*;
 import java.net.*;
 
 class Server {
+	
+	public static University uni = new University("Hogwarts");
+	
 	public static void main(String[] args) 
 	{
 		ServerSocket server = null;
@@ -67,30 +72,18 @@ class Server {
 					Message message = (Message) in.readObject();
 					
 	                switch (message.getType()) {
+	                
+	                	case REGISTER:
+	                		handleRegister(message);
+	                		break;
+	                
 	                    case LOGIN:
-	                        System.out.println("Received login request.");
-	                        loggedIn = true;
-	                        Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Welcome!");
-	                        out.writeObject(loginResponse);
 	                        break;
 	
 	                    case Type.TEXT:
-	                        if (loggedIn) {
-	                            System.out.println("Received text: " + message.getText());
-	                            String upper = message.getText().toUpperCase();
-	                            Message reply = new Message(Type.TEXT, Status.SUCCESS, upper);
-	                            out.writeObject(reply);
-	                        }
 	                        break;
 	
 	                    case Type.LOGOUT:
-	                        if (loggedIn) {
-	                            System.out.println("Client logged out.");
-	                            Message logoutMsg = new Message(Type.LOGOUT, Status.SUCCESS, "Goodbye!");
-	                            out.writeObject(logoutMsg);
-	                            clientSocket.close();
-	                            return;
-	                        }
 	                        break;
 	
 	                    default:
@@ -117,5 +110,20 @@ class Server {
 				}
 			}
 		}
+		
+		private void handleRegister(Message message) {
+			String info = message.getText();
+			
+			String[] parts = info.split(",");
+			String name = parts[0].trim();
+			String password = parts[1].trim();
+			
+			Student student = new Student(name, password);
+			
+			uni.addStudent(student);
+			
+			
+		}
+		
 	}
 }

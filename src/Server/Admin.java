@@ -1,13 +1,18 @@
+package Server;
+
 import java.util.*;
 
-public class Admin extends User{	
-	public Admin(String id, String name, String password) {
-		super(id, name, password);
+public class Admin extends User{
+	
+	private String email;
+	
+	public Admin(String name, String password) {
+		super(name, password);
 	}
 	
 	// methods
 	public Course createCourse() {
-
+		return null;
 	}
 	
 	public void updateCourse() {
@@ -20,6 +25,10 @@ public class Admin extends User{
 	
 	public void generateReport() {
 		
+	}
+	
+	public Role getRole() {
+		return Role.STUDENT;
 	}
 	
 	// getters and setters

@@ -1,9 +1,17 @@
+package Client;
+
 import java.io.Serializable;
 
 enum Type{
+	REGISTER,
 	LOGIN,
 	TEXT,
-	LOGOUT
+	LOGOUT,
+    LIST_COURSES, 
+    ENROLL_COURSE, 
+    DROP_COURSE, 
+    VIEW_BALANCE, 
+    PAY_BALANCE
 }
 
 enum Status{
