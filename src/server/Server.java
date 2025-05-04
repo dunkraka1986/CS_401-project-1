@@ -92,7 +92,10 @@ class Server {
 	                        break;
 	
 	                    case Type.LOGOUT:
-	                        break;
+	                    	
+	                    	System.out.println("Client logged out.");
+                            clientSocket.close();
+	                        return;
 	
 	                    default:
 	                        System.out.println("Unknown message type received.");
@@ -128,8 +131,9 @@ class Server {
 			String[] parts = info.split(",");
 			String name = parts[0].trim();
 			String password = parts[1].trim();
+			String phoneNumber = parts[2].trim();
 			
-			Student student = new Student(name, password);
+			Student student = new Student(name, password, Long.parseLong(phoneNumber));
 			
 			uni.addStudent(student);
 			
