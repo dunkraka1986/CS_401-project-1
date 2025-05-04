@@ -303,7 +303,10 @@ public class StudentGUI {
     
     private JPanel createAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
-		JPanel panel = new JPanel();
-		return panel;
+    	JPanel appContainer = new JPanel(new BorderLayout());
+		
+		
+		
+		return appContainer;
 	}
 }
