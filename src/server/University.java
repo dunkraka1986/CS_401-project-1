@@ -27,4 +27,8 @@ public class University {
 	public void removeStudent(Student student) {
 		students.remove(student);
 	}
+	
+	public void setCourses(ArrayList<Course> courses) {
+		this.courses = courses;
+	}
 }
