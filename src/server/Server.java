@@ -24,7 +24,7 @@ class Server {
 
 				Socket client = server.accept();
 
-				System.out.println("New client connected"
+				System.out.println("New client connected "
 								+ client.getInetAddress()
 										.getHostAddress());
 
@@ -82,16 +82,17 @@ class Server {
 	                		break;
 	                
 	                    case CONNECT:
-	                    	System.out.println("Received login request.");
+	                    	System.out.println("Received connection request.");
 	                        loggedIn = true;
 	                        Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Welcome!");
 	                        out.writeObject(loginResponse);
 	                        break;
 	
-	                    case Type.TEXT:
+	                    case LOGIN:
+	                    	handleLogin(message);
 	                        break;
 	
-	                    case Type.LOGOUT:
+	                    case LOGOUT:
 	                    	
 	                    	System.out.println("Client logged out.");
                             clientSocket.close();
@@ -120,6 +121,55 @@ class Server {
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		public void handleLogin(Message message) throws IOException {
+			
+			System.out.println("Received login request.");
+			
+			String info = message.getText();
+			
+			String[] parts = info.split(",");
+			String name = parts[0].trim();
+			String password = parts[1].trim();
+			
+			String folder = "data/";
+			File file = new File(folder + name);
+			
+			if(!file.exists()) {
+				System.out.println("Login Failed: User not found");
+				Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login Failed: User not found");
+				out.writeObject(loginResponse);
+				return;
+			}
+			
+			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+		        String line = reader.readLine();  // read first line: name,password,phone
+		        if (line != null) {
+		            String[] fileParts = line.split(",");
+		            String storedName = fileParts[0].trim();
+		            String storedPassword = fileParts[1].trim();
+		            // String storedPhone = fileParts[2].trim();  // optional, you can use this later
+
+		            if (password.equals(storedPassword)) {
+		                System.out.println("Login successful.");
+		                Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Login successful. Welcome, " + storedName + "!");
+		                out.writeObject(loginResponse);
+		            } else {
+		                System.out.println("Login failed: incorrect password.");
+		                Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login failed: incorrect password.");
+		                out.writeObject(loginResponse);
+		            }
+		        } else {
+		            System.out.println("Login failed: empty user file.");
+		            Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login failed: empty user file.");
+		            out.writeObject(loginResponse);
+		        }
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		        Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login failed: server error.");
+		        out.writeObject(loginResponse);
+		    }
 		}
 		
 		private void handleRegister(Message message) {
