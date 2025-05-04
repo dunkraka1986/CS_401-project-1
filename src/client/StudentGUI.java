@@ -64,16 +64,20 @@ public class StudentGUI {
         JPanel cardPanel = new JPanel(cardLayout);
 
         JPanel entryPanel = createEntryPanel(cardLayout, cardPanel);
-        JPanel registerPanel = createRegisterPanel();
+        JPanel loginPanel = createLoginPanel(cardLayout, cardPanel);
+        JPanel registerPanel = createRegisterPanel(cardLayout, cardPanel);
+        JPanel appPanel = createAppPanel(cardLayout, cardPanel);
 
         cardPanel.add(entryPanel, "ENTRY");
+        cardPanel.add(loginPanel, "LOGIN");
         cardPanel.add(registerPanel, "REGISTER");
+        cardPanel.add(appPanel, "APP");
 
         mainFrame.add(cardPanel);
         mainFrame.setVisible(true);
     }
 
-    private JPanel createEntryPanel(CardLayout cardLayout, JPanel cardPanel) {
+	private JPanel createEntryPanel(CardLayout cardLayout, JPanel cardPanel) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -85,6 +89,8 @@ public class StudentGUI {
         loginButton.setIcon(loginIcon);
         loginButton.setHorizontalTextPosition(SwingConstants.CENTER);
         loginButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+        
+        loginButton.addActionListener(e -> cardLayout.show(cardPanel, "LOGIN"));
 
         JButton registerButton = new JButton("Register");
         ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
@@ -111,11 +117,95 @@ public class StudentGUI {
         return panel;
     }
 	
-    private JPanel createAppPanel() {
-		return null;
+    private JPanel createLoginPanel(CardLayout cardLayout, JPanel cardPanel) {
+    	
+    	JPanel panel = new JPanel(new BorderLayout(10,10));
+	    
+	    ImageIcon registerIcon = new ImageIcon("Images/login.jpg");
+        Image img1 = registerIcon.getImage();
+        Image resizedImg1 = img1.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
+        registerIcon = new ImageIcon(resizedImg1);
+        
+        JLabel imageLabel = new JLabel();
+        imageLabel.setIcon(registerIcon);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 300, 10, 10));
+        
+        JPanel detailPanel = new JPanel();
+        detailPanel.setLayout(new GridLayout(6,1,1,1));
+        detailPanel.setBorder(BorderFactory.createEmptyBorder(300, 10, 300, 700));
+        
+        JPanel userNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel userNameLabel = new JLabel("First Name:");
+        JTextField userNameField = new JTextField(15);
+        userNamePanel.add(userNameLabel);
+        userNamePanel.add(userNameField);
+        
+        JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel passwordLabel = new JLabel("Last Name:");
+        JPasswordField passwordField = new JPasswordField(15);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        
+        JButton submitButton = new JButton("Submit");
+	    submitButton.setSize(50, 25);
+	    
+	    submitButton.addActionListener(e -> {
+	        String userName = userNameField.getText().trim();
+	        String password = new String(passwordField.getPassword());
+
+	        if (userName.isEmpty() || password.isEmpty()) {
+	            JOptionPane.showMessageDialog(panel,
+	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        String student = userName + "," + password;
+	        
+	        Message textMsg = new Message(Type.LOGIN, Status.NULL, student);
+	        try {
+				out.writeObject(textMsg);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        Message loginResponse = null;
+			try {
+				loginResponse = (Message) in.readObject();
+			} catch (ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        switch (loginResponse.getStatus()) {
+	        
+	        	case SUCCESS:
+	        		JOptionPane.showMessageDialog(panel,"Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
+	        		cardLayout.show(cardPanel, "APP");
+	        		break;
+	        		
+	        	case FAILED:
+	        		String message = loginResponse.getText();
+	        		JOptionPane.showMessageDialog(panel, message, "Hogwarts", JOptionPane.ERROR_MESSAGE);
+	        		break;
+	        		
+	        	default:
+                    System.out.println("Unknown message type received.");
+                    break;
+	        	
+	        }
+
+	    });
+	    
+	    detailPanel.add(userNamePanel);
+	    detailPanel.add(passwordPanel);
+	    detailPanel.add(submitButton);
+	    
+	    panel.add(detailPanel, BorderLayout.EAST);
+        panel.add(imageLabel, BorderLayout.WEST);
+    	
+		return panel;
 	}
     
-    private JPanel createRegisterPanel() {
+    private JPanel createRegisterPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
 	    JPanel panel = new JPanel(new BorderLayout(10,10));
 	    
@@ -194,7 +284,7 @@ public class StudentGUI {
 			}
 	        
 	        JOptionPane.showMessageDialog(panel,
-	                "Registration successful!\nWelcome, " + firstName + " " + lastName,
+	                "Registration successful!\nWelcome to Hogwarts, " + firstName + " " + lastName,
 	                "Success", JOptionPane.INFORMATION_MESSAGE);
 	    });
 
@@ -210,4 +300,10 @@ public class StudentGUI {
 
 	    return panel;
     }
+    
+    private JPanel createAppPanel(CardLayout cardLayout, JPanel cardPanel) {
+    	
+		JPanel panel = new JPanel();
+		return panel;
+	}
 }

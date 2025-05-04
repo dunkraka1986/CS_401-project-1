@@ -1,10 +1,12 @@
 package common;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
     protected final Type type;
     protected Status status;
     protected String text;
+    protected ArrayList<String> list;
 
     public Message(){
         this.type = null;
@@ -18,12 +20,11 @@ public class Message implements Serializable {
         this.text = text;
     }
     
-    private void setStatus(Status status){
-    	this.status = status;
-    }
-
-    private void setText(String text){
-    	this.text = text;
+    public Message(Type type, Status status, String text, ArrayList<String> list){
+        this.type = type;
+        this.status = status;
+        this.text = text;
+        this.list = list;
     }
 
     public Type getType(){
@@ -36,6 +37,10 @@ public class Message implements Serializable {
 
     public String getText(){
     	return text;
+    }
+    
+    public ArrayList<String> getList(){
+    	return list;
     }
 
 }
