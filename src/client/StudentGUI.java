@@ -33,22 +33,50 @@ public class StudentGUI {
     	
     	mainFrame = new JFrame("College Enrollment System");
     	mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-    	mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
+    	mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    	mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+    	    @Override
+    	    public void windowClosing(java.awt.event.WindowEvent e) {
+    	        int result = JOptionPane.showConfirmDialog(
+    	            mainFrame,
+    	            "Are you sure you want to exit?",
+    	            "Exit Confirmation",
+    	            JOptionPane.YES_NO_OPTION
+    	        );
+
+    	        if (result == JOptionPane.YES_OPTION) {
+    	            try {
+    	                out.writeObject(new Message(Type.LOGOUT, Status.NULL, ""));
+    	                out.close();
+    	                in.close();
+    	                socket.close();
+    	            } catch (IOException ex) {
+    	                ex.printStackTrace();
+    	            }
+
+    	            System.exit(0);
+    	        }
+    	    }
+    	});
     	mainFrame.setLocationRelativeTo(null);
     	
-    	JPanel entryPanel = createEntryPanel();
-        JPanel appPanel = createAppPanel();
-    	
-        mainFrame.add(entryPanel);
-        
+    	CardLayout cardLayout = new CardLayout();
+        JPanel cardPanel = new JPanel(cardLayout);
+
+        JPanel entryPanel = createEntryPanel(cardLayout, cardPanel);
+        JPanel registerPanel = createRegisterPanel();
+
+        cardPanel.add(entryPanel, "ENTRY");
+        cardPanel.add(registerPanel, "REGISTER");
+
+        mainFrame.add(cardPanel);
         mainFrame.setVisible(true);
     }
 
-	private JPanel createEntryPanel() {
-		
-    	JPanel panel = new JPanel();
+    private JPanel createEntryPanel(CardLayout cardLayout, JPanel cardPanel) {
+        JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        
+
         JButton loginButton = new JButton("Login");
         ImageIcon loginIcon = new ImageIcon("Images/login.jpg");
         Image img = loginIcon.getImage();
@@ -58,7 +86,6 @@ public class StudentGUI {
         loginButton.setHorizontalTextPosition(SwingConstants.CENTER);
         loginButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        
         JButton registerButton = new JButton("Register");
         ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
         Image img1 = registerIcon.getImage();
@@ -67,12 +94,11 @@ public class StudentGUI {
         registerButton.setIcon(registerIcon);
         registerButton.setHorizontalTextPosition(SwingConstants.CENTER);
         registerButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-        
-        panel.add(loginButton);
-        panel.add(registerButton);
-        
+
+        registerButton.addActionListener(e -> cardLayout.show(cardPanel, "REGISTER"));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 20, 0, 20); // top, left, bottom, right
+        gbc.insets = new Insets(0, 20, 0, 20);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -81,11 +107,107 @@ public class StudentGUI {
         gbc.gridx = 1;
         gbc.gridy = 0;
         panel.add(registerButton, gbc);
-        
-    	return panel;
+
+        return panel;
     }
 	
     private JPanel createAppPanel() {
 		return null;
 	}
+    
+    private JPanel createRegisterPanel() {
+    	
+	    JPanel panel = new JPanel(new BorderLayout(10,10));
+	    
+	    ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
+        Image img1 = registerIcon.getImage();
+        Image resizedImg1 = img1.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
+        registerIcon = new ImageIcon(resizedImg1);
+        
+        JLabel imageLabel = new JLabel();
+        imageLabel.setIcon(registerIcon);
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 300, 10, 10));
+        
+        JPanel detailPanel = new JPanel();
+        detailPanel.setLayout(new GridLayout(6,1,1,1));
+        detailPanel.setBorder(BorderFactory.createEmptyBorder(300, 10, 300, 700));
+        
+        JPanel firstNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel firstNameLabel = new JLabel("First Name:");
+        JTextField firstNameField = new JTextField(15);
+        firstNamePanel.add(firstNameLabel);
+        firstNamePanel.add(firstNameField);
+        
+        JPanel lastNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel lastNameLabel = new JLabel("Last Name:");
+        JTextField lastNameField = new JTextField(15);
+        lastNamePanel.add(lastNameLabel);
+        lastNamePanel.add(lastNameField);
+        
+        JPanel numberPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel numberLabel = new JLabel("Phone Number:");
+        JTextField numberField = new JTextField(15);
+        numberPanel.add(numberLabel);
+        numberPanel.add(numberField);
+        
+        JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel passwordLabel = new JLabel("Passowrd:");
+        JPasswordField passwordField = new JPasswordField(15);
+        passwordPanel.add(passwordLabel);
+        passwordPanel.add(passwordField);
+        
+        JPanel confirmPasswordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+        JPasswordField confirmPasswordField = new JPasswordField(15);
+        confirmPasswordPanel.add(confirmPasswordLabel);
+        confirmPasswordPanel.add(confirmPasswordField);
+
+	    JButton submitButton = new JButton("Submit");
+	    submitButton.setSize(50, 25);
+
+	    submitButton.addActionListener(e -> {
+	        String firstName = firstNameField.getText().trim();
+	        String lastName = lastNameField.getText().trim();
+	        String phone = numberField.getText().trim();
+	        String password = new String(passwordField.getPassword());
+	        String confirmPassword = new String(confirmPasswordField.getPassword());
+
+	        if (firstName.isEmpty() || lastName.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+	            JOptionPane.showMessageDialog(panel,
+	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        if (!password.equals(confirmPassword)) {
+	            JOptionPane.showMessageDialog(panel,
+	                    "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
+
+	        String student = firstName + " " + lastName + "," + password + "," + phone;
+	        
+	        Message textMsg = new Message(Type.REGISTER, Status.NULL, student);
+	        try {
+				out.writeObject(textMsg);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        JOptionPane.showMessageDialog(panel,
+	                "Registration successful!\nWelcome, " + firstName + " " + lastName,
+	                "Success", JOptionPane.INFORMATION_MESSAGE);
+	    });
+
+	    detailPanel.add(firstNamePanel);
+	    detailPanel.add(lastNamePanel);
+	    detailPanel.add(numberPanel);
+	    detailPanel.add(passwordPanel);
+	    detailPanel.add(confirmPasswordPanel);
+	    detailPanel.add(submitButton);
+	    
+	    panel.add(detailPanel, BorderLayout.EAST);
+        panel.add(imageLabel, BorderLayout.WEST);
+
+	    return panel;
+    }
 }

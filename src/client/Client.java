@@ -9,51 +9,27 @@ import common.Status;
 
 class Client {
 	
-	public static void main(String[] args)
-	{
-		try (Socket socket = new Socket("localhost", 1234)) {
-			
-			InputStream inputStream = socket.getInputStream();
-			OutputStream outputStream = socket.getOutputStream();
-				
-			ObjectOutputStream out = new ObjectOutputStream(outputStream);
-			ObjectInputStream in = new ObjectInputStream(inputStream);
+	public static void main(String[] args) {
+	    Socket socket = null;
+	    ObjectOutputStream out = null;
+	    ObjectInputStream in = null;
 
-			Scanner scanner = new Scanner(System.in);
+	    try {
+	        socket = new Socket("localhost", 1234);
+	        out = new ObjectOutputStream(socket.getOutputStream());
+	        in = new ObjectInputStream(socket.getInputStream());
 
-			Message loginMsg = new Message(Type.CONNECT, Status.NULL, "Logging in...");
-            out.writeObject(loginMsg);
-            Message response = (Message) in.readObject();
-            System.out.println("Server: " + response.getText());
-            
-//            while (true) {
-//                System.out.print("Enter message (or 'logout' to exit): ");
-//                System.out.println("Enter name: ");
-//                String input = scanner.nextLine();
-//                System.out.println("Enter password: ");
-//                String password = scanner.nextLine();
-//
-//                if (input.equalsIgnoreCase("logout")) {
-//                    Message logoutMsg = new Message(Type.LOGOUT, Status.NULL, "");
-//                    out.writeObject(logoutMsg);
-//                    Message logoutResponse = (Message) in.readObject();
-//                    System.out.println("Server: " + logoutResponse.getText());
-//                    break;
-//                }
-//
-//                String student = input + "," + password;
-//                Message textMsg = new Message(Type.REGISTER, Status.NULL, student);
-//                out.writeObject(textMsg);
-//            }
-            
-            StudentGUI student = new StudentGUI(socket, in, out);
-            student.processCommands();
+	        Message loginMsg = new Message(Type.CONNECT, Status.NULL, "Logging in...");
+	        out.writeObject(loginMsg);
+	        Message response = (Message) in.readObject();
+	        System.out.println("Server: " + response.getText());
 
-			
-			scanner.close();
-		}
-		catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	        StudentGUI student = new StudentGUI(socket, in, out);
+	        student.processCommands();
+
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
 	}
+
 }

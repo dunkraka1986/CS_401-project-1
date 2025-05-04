@@ -5,13 +5,15 @@ import java.util.*;
 
 public class Student extends User{
 	
+	private long phoneNumber;
 	private ArrayList<Course> enrolledCourses = new ArrayList<Course>();
 	private ArrayList<Hold> Holds = new ArrayList<Hold>();
 	private double balance;
 	private int unitCap = 18;
 	
-	public Student(String name, String password) { 
+	public Student(String name, String password, long phoneNumber) { 
         super(name, password);
+        this.phoneNumber = phoneNumber;
     }
 	
 	public Role getRole() {
@@ -86,7 +88,7 @@ public class Student extends User{
 	        }
 
 	        BufferedWriter writer = new BufferedWriter(new FileWriter(folder + name));
-	        writer.write(name + "," + password);
+	        writer.write(name + "," + password + "," + phoneNumber);
 	        writer.newLine();
 
 	        for (int i = 0; i < enrolledCourses.size(); i++) {
@@ -103,6 +105,6 @@ public class Student extends User{
 
 	
 	public String toString() {
-		return name + "," + password;
+		return name + "," + password + "," + phoneNumber;
 	}
 }
