@@ -3,6 +3,8 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+
 import common.Message;
 import common.Type;
 import common.Status;
@@ -13,6 +15,8 @@ class Server {
 	
 	public static void main(String[] args) 
 	{
+		initializeCourses();
+		
 		ServerSocket server = null;
 
 		try {
@@ -191,4 +195,100 @@ class Server {
 			
 		}
 	}
+	
+	public static void initializeCourses() {
+	    ArrayList<Course> courses = new ArrayList<>();
+
+	    courses.add(new Course("Defense Against the Dark Arts", 
+	        "Learn to defend against dark creatures, curses, and hexes.", 
+	        "Professor Lupin", 30, 3));
+
+	    courses.add(new Course("Potions", 
+	        "Master the art of potion-making and brewing magical mixtures.", 
+	        "Professor Snape", 25, 4));
+
+	    courses.add(new Course("Herbology", 
+	        "Study magical plants and their uses.", 
+	        "Professor Sprout", 20, 3));
+
+	    courses.add(new Course("Transfiguration", 
+	        "Transform objects and creatures into different forms.", 
+	        "Professor McGonagall", 25, 4));
+
+	    courses.add(new Course("Charms", 
+	        "Learn charms for levitation, unlocking, and more.", 
+	        "Professor Flitwick", 30, 3));
+
+	    courses.add(new Course("Astronomy", 
+	        "Explore stars, planets, and magical constellations.", 
+	        "Professor Sinistra", 20, 2));
+
+	    courses.add(new Course("Care of Magical Creatures", 
+	        "Handle and care for magical creatures safely.", 
+	        "Professor Hagrid", 15, 2));
+
+	    courses.add(new Course("Divination", 
+	        "Study methods of prophecy and prediction.", 
+	        "Professor Trelawney", 15, 2));
+
+	    courses.add(new Course("History of Magic", 
+	        "Learn the history of the wizarding world.", 
+	        "Professor Binns", 40, 3));
+
+	    courses.add(new Course("Arithmancy", 
+	        "Discover the magical properties of numbers.", 
+	        "Professor Vector", 15, 3));
+	    
+	    courses.add(new Course("Apparition", 
+	    	    "Learn the magical art of teleporting from one place to another.", 
+	    	    "Professor Wilkie Twycross", 10, 2));
+
+    	courses.add(new Course("Advanced Potions", 
+    	    "A deeper dive into complex and dangerous potion-making.", 
+    	    "Professor Slughorn", 20, 4));
+
+    	courses.add(new Course("Muggle Studies", 
+    	    "Understand the non-magical world and its customs.", 
+    	    "Professor Burbage", 30, 2));
+
+    	courses.add(new Course("Flying Lessons", 
+    	    "Learn the basics of broomstick flying and aerial maneuvers.", 
+    	    "Madam Hooch", 15, 1));
+
+    	courses.add(new Course("Ancient Runes", 
+    	    "Study the magical symbols and writings of ancient civilizations.", 
+    	    "Professor Babbling", 15, 3));
+
+    	courses.add(new Course("Magical Theory", 
+    	    "Explore the fundamental principles behind magic.", 
+    	    "Professor Marchbanks", 25, 3));
+
+    	courses.add(new Course("Duelling Club", 
+    	    "Practice magical combat and defense techniques.", 
+    	    "Professor Lockhart", 20, 2));
+
+    	courses.add(new Course("Occlumency", 
+    	    "Learn to shield your mind from external influence.", 
+    	    "Professor Snape", 10, 2));
+
+    	courses.add(new Course("Legilimency", 
+    	    "Master the magical ability to penetrate minds and memories.", 
+    	    "Professor Dumbledore", 10, 2));
+
+    	courses.add(new Course("Alchemy", 
+    	    "Study the mystical science of transmutation and eternal life.", 
+    	    "Professor Alkimia", 10, 4));
+
+    	courses.add(new Course("Magizoology", 
+    	    "Explore magical creatures beyond Care of Magical Creatures.", 
+    	    "Professor Scamander", 15, 3));
+
+    	courses.add(new Course("Enchantments", 
+    	    "Learn to imbue objects with magical properties.", 
+    	    "Professor Flitwick", 20, 3));
+
+	    uni.setCourses(courses);
+	}
+
+
 }

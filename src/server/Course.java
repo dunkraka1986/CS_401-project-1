@@ -8,6 +8,7 @@ public class Course {
 	private int courseID;
 	private String title;
 	private String description;
+	private String professor;
 	private int capacity;
 	private int units;
 	private ArrayList<String> prerequisites;
@@ -23,27 +24,28 @@ public class Course {
 		this.enrolledStudents = new ArrayList<Student>();
 	}
 	
-	public Course(String title, String description, int capacity, int units, ArrayList<String> prerequisites) {
+	public Course(String title, String description, String professor, int capacity, int units) {
 		this.courseID = ++uniqueId;
 		this.title = title;
 		this.description = description;
+		this.professor = professor;
 		this.capacity = capacity;
 		this.units = units;
-		this.prerequisites = prerequisites;
+		this.prerequisites = new ArrayList<String>();
 		this.enrolledStudents = new ArrayList<Student>();
+		this.waitlistedStudents = new ArrayList<Student>();
 	}
 	// methods
 	public boolean addStudent(Student student) {
-		boolean added = false;
-		
-		// if enrolled students is not full then add, else return false and dont add
-		if (!this.isFull()) {
-			this.enrolledStudents.add(student);
-			added = true;
-		}
-		
-		return added;
+	    if (!isFull()) {
+	        this.enrolledStudents.add(student);
+	        return true;
+	    } else {
+	        this.addToWaitlist(student);
+	        return false;
+	    }
 	}
+
 	
 	public boolean removeStudent(Student student) {
 		boolean removed = false;
@@ -58,7 +60,7 @@ public class Course {
 		boolean full = false;
 		
 		// logic to check if course is full
-		if (this.capacity >= this.enrolledStudents.size()) {
+		if ( this.enrolledStudents.size() >= this.capacity) {
 			full = true;
 		}
 		
@@ -84,6 +86,10 @@ public class Course {
 	// getters and setters
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public void setProfessor(String professor) {
+		this.professor = professor;
 	}
 	
 	public void setCapacity(int capacity) {
@@ -116,5 +122,9 @@ public class Course {
 	
 	public String getDescription() {
 		return this.description;
+	}
+	
+	public String getProfessor() {
+		return this.professor;
 	}
 }
