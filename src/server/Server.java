@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import common.Message;
 import common.Type;
@@ -152,7 +153,7 @@ class Server {
 	                    	//viewStudents(message);
 	                    	break;
 	                    case REPORT:
-	                    	//report(message);
+	                    	report();
 	                    	break;
 	                    	
 	                    default:
@@ -446,10 +447,12 @@ class Server {
 			}
 			if (student != null && course != null) {
 				// send success message
-				message = new Message(Type.ENROLL_COURSE, Status.SUCCESS, "Enrolled successfully");
+				status = Status.SUCCESS;
+				message = new Message(Type.ENROLL_COURSE, status, "Enrolled successfully");
 			} else {
 				// send failed message
-				message = new Message(Type.ENROLL_COURSE, Status.FAILED, "Enrollment failed");
+				status = Status.FAILED;
+				message = new Message(Type.ENROLL_COURSE, status, "Enrollment failed");
 			}
 			try {
 				out.writeObject(message);
@@ -485,10 +488,37 @@ class Server {
 				e.printStackTrace();
 			}
 		}
-		/*
-		private void removeHold(Message message) {
+		private void report() {
+			Message reportMessage = null;
 			
-		}*/
+			String fileName = "report.txt";
+			File file = new File(fileName);
+			if (!file.exists()) {
+				// sends user message that file doesn't exist
+				reportMessage = new Message(Type.REPORT, Status.FAILED, "File doesn\'t exist.");
+				try {
+					out.writeObject(reportMessage);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+			
+			// read from report.txt file
+			String line = "";
+			Scanner scanner = new Scanner(System.in);
+			while (scanner.hasNextLine()) {
+				line += scanner.nextLine() + ",";
+			}
+			scanner.close();
+			// send file info in message to client
+			reportMessage = new Message(Type.REPORT, Status.SUCCESS, line);
+			try {
+				out.writeObject(reportMessage);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public static void initializeCourses() {
