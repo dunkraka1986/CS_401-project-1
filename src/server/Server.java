@@ -182,20 +182,28 @@ class Server {
 		}
 		
 		private void handleProfile(Message message) {
-			
-			System.out.println("Recevied profile request");
-			
-			String info = currentStudent.toString();
-			
-			Message infor = new Message(Type.PROFILE, Status.SUCCESS, info);
-			
-			try {
-				out.writeObject(infor);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+		    System.out.println("Received profile request");
+
+		    if (currentStudent == null) {
+		        Message error = new Message(Type.PROFILE, Status.FAILED, "No student profile loaded.");
+		        try {
+		            out.writeObject(error);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return;
+		    }
+
+		    String info = currentStudent.toString();
+		    Message infor = new Message(Type.PROFILE, Status.SUCCESS, info);
+
+		    try {
+		        out.writeObject(infor);
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 		}
+
 
 		private void handleDropCourse(Message message) {
 			
@@ -343,6 +351,8 @@ class Server {
 		    Student student = new Student(name, password, Long.parseLong(phoneNumber));
 		    uni.addStudent(student);
 		    student.save();
+		    
+		    currentStudent = uni.getStudentByName(name);
 		    
 		    System.out.println("Student registered successfully: " + name);
 		    try {
