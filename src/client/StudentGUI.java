@@ -428,32 +428,29 @@ public class StudentGUI {
     }
     
     private JPanel createBalancePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+    	JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createHoldPagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createCourseCatalogPagePanel() {
 		
 		JPanel panel = new JPanel();
-		
-		
-		
-		return null;
+		return panel;
 	}
 
 	private JPanel createProfilePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createHomePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
