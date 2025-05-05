@@ -1084,8 +1084,34 @@ public class StudentGUI {
 	
 	private JPanel reportPanel() {
 		JPanel panel = new JPanel();
-		JButton btn = new JButton("report btn");
-		panel.add(btn);
+		
+		JPanel reportDataPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		ArrayList<JLabel> data = new ArrayList<JLabel>();
+		
+		JPanel generatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JButton generateButton = new JButton("Generate Report");
+		generateButton.setPreferredSize(new Dimension(500, 500));
+		generatePanel.add(generateButton);
+		
+		generateButton.addActionListener(e -> {
+			Message reportResponse = null;
+			try {
+				reportResponse = (Message) in.readObject();
+			} catch(ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+			String[] reportFileData = reportResponse.getText().split(",");
+			
+			for (int i = 0; i < reportFileData.length; i++) {
+				JLabel newData = new JLabel(reportFileData[i]);
+				data.add(newData);
+				reportDataPanel.add(data.get(i));
+			}
+		});
+		
+		panel.add(reportDataPanel);
+		panel.add(generatePanel);
+		
 		return panel;
 	}
 }
