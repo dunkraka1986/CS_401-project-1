@@ -131,4 +131,8 @@ public class Course {
 	public String toString() {
 		return title + "," + description + "," + professor + "," + capacity + "," + units + "," + enrolledStudents.size() + "," + waitlistedStudents.size();
 	}
+	
+	public ArrayList<Student> getEnrolledStudents(){
+		return this.enrolledStudents;
+	}
 }

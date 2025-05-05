@@ -8,8 +8,8 @@ public class University {
 	static private int uniqueId = 0;
 	private int id;
 	private String title;
-	List<Student> students = new ArrayList<Student>();
-	List<Course> courses = new ArrayList<Course>();
+	ArrayList<Student> students = new ArrayList<Student>();
+	ArrayList<Course> courses = new ArrayList<Course>();
 	
 	public University() {
 		this.id = 0;
@@ -55,7 +55,11 @@ public class University {
 	    return null;
 	}
 	
-	public ArrayList<String> getCorses() {
+	public ArrayList<Course> getCorses(){
+		return courses;
+	}
+	
+	public ArrayList<String> getCorse() {
 		
 		ArrayList<String> coursee = new ArrayList<>();
 		
@@ -64,6 +68,15 @@ public class University {
 		}
 		
 		return coursee;
+	}
+	
+	
+	public void addCourse(Course course) {
+		this.courses.add(course);
+	}
+	
+	public List<Student> getStudents(){
+		return this.students;
 	}
 	
 	public void loadStudents() {

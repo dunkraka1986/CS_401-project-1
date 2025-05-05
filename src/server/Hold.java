@@ -14,6 +14,13 @@ public class Hold implements Serializable {
         this.status = "ACTIVE";
     }
 
+    // Constructor for JUnit Testing
+    public Hold(String holdID, String reason, String status) {
+        this.holdID = holdID;
+        this.reason = reason;
+        this.status = status;
+    }
+
     public String getHoldID() {
         return holdID;
     }
@@ -26,10 +33,12 @@ public class Hold implements Serializable {
         return status;
     }
 
+    // Activate hold
     public void placeHold() {
         status = "ACTIVE";
     }
 
+    // Clear hold
     public void clearHold() {
         status = "CLEARED";
     }

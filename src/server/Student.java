@@ -15,9 +15,45 @@ public class Student extends User {
         super(name, password);
         this.phoneNumber = phoneNumber;
     }
+	
+	public Role getRole() {
+		return Role.STUDENT;
+	}
 
-    public Role getRole() {
-        return Role.STUDENT;
+	
+	public void dropCourse(Course course) { 
+		enrolledCourses.remove(course); 
+	}
+	
+	public ArrayList<Course> getCourseList() {
+		return enrolledCourses;
+	}
+	
+	public boolean hasHold() {
+		if(holds.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public ArrayList<Hold> getHold(){
+		return holds;
+	}
+	
+	public void setHold(Hold hold) {
+		holds.add(hold);
+	}
+	
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	
+	public double getBalance() {
+		return balance;
+	}
+	
+	public void applyPayment(double amt) { 
+        balance = balance - amt;
     }
 
     // ✅ Enroll in course with unit + hold checks
@@ -37,19 +73,10 @@ public class Student extends User {
         return "YAY";
     }
 
-    // ✅ Add course directly (no checks) → used when loading from file
     public void addCourse(Course course) {
         if (course != null && !enrolledCourses.contains(course)) {
             enrolledCourses.add(course);
         }
-    }
-
-    public void dropCourse(Course course) {
-        enrolledCourses.remove(course);
-    }
-
-    public ArrayList<Course> getCourseList() {
-        return enrolledCourses;
     }
     
     public ArrayList<String> getCorses() {
@@ -63,29 +90,6 @@ public class Student extends User {
 		return coursee;
 	}
 
-    public boolean hasHold() {
-        return !holds.isEmpty();
-    }
-
-    public ArrayList<Hold> getHold() {
-        return holds;
-    }
-
-    public void setHold(Hold hold) {
-        holds.add(hold);
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void applyPayment(double amt) {
-        balance -= amt;
-    }
 
     public boolean canEnroll(int unitsToAdd) {
         int currentUnits = enrolledCourses.stream()

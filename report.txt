@@ -1,4 +1,49 @@
-[2025-05-04T18:38:43.297055900] System: Registered new student: 1 1
-[2025-05-04T18:38:47.863841500] System: Registered new student: 1 1
-[2025-05-04T18:46:18.029078600] System: Registered new student: Aakkash Muthukumar
-[2025-05-04T18:49:29.048470] System: Registered new student: 2 2
+[2025-05-05T03:03:28.476863] Admin Admin1: Added course
+[2025-05-05T03:03:38.008534200] Admin AdminA: Added a student
+[2025-05-05T03:03:38.011537] Admin AdminA: Removed a hold
+[2025-05-05T03:03:38.014038500] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:38.014038500] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:38.023046300] Admin AdminB: Reset password
+[2025-05-05T03:03:38.023547100] Admin AdminB: Issued refund
+[2025-05-05T03:03:38.023547100] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:38.024047100] Admin AdminB: AdminB: Issued refund
+[2025-05-05T03:03:40.711497600] Admin AdminA: Added a student
+[2025-05-05T03:03:40.714499300] Admin AdminA: Removed a hold
+[2025-05-05T03:03:40.717001600] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:40.717001600] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:40.725509100] Admin AdminB: Reset password
+[2025-05-05T03:03:40.725509100] Admin AdminB: Issued refund
+[2025-05-05T03:03:40.726009200] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:40.726009200] Admin AdminB: AdminB: Issued refund
+[2025-05-05T03:03:41.200637600] Admin AdminA: Added a student
+[2025-05-05T03:03:41.203639700] Admin AdminA: Removed a hold
+[2025-05-05T03:03:41.206141400] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:41.206141400] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:41.214148500] Admin AdminB: Reset password
+[2025-05-05T03:03:41.214649] Admin AdminB: Issued refund
+[2025-05-05T03:03:41.215149400] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:41.215149400] Admin AdminB: AdminB: Issued refund
+[2025-05-05T03:03:41.882175200] Admin AdminA: Added a student
+[2025-05-05T03:03:41.885678200] Admin AdminA: Removed a hold
+[2025-05-05T03:03:41.888180100] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:41.888680600] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:41.897688600] Admin AdminB: Reset password
+[2025-05-05T03:03:41.898189300] Admin AdminB: Issued refund
+[2025-05-05T03:03:41.898189300] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:41.898690] Admin AdminB: AdminB: Issued refund
+[2025-05-05T03:03:41.904695300] Admin AdminA: Added a student
+[2025-05-05T03:03:41.908197900] Admin AdminA: Removed a hold
+[2025-05-05T03:03:41.911700900] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:41.911700900] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:41.920708800] Admin AdminB: Reset password
+[2025-05-05T03:03:41.920708800] Admin AdminB: Issued refund
+[2025-05-05T03:03:41.921208800] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:41.921208800] Admin AdminB: AdminB: Issued refund
+[2025-05-05T03:03:42.892225300] Admin AdminA: Added a student
+[2025-05-05T03:03:42.895728400] Admin AdminA: Removed a hold
+[2025-05-05T03:03:42.898230500] Admin AdminA: AdminA: Added a student
+[2025-05-05T03:03:42.898230500] Admin AdminA: AdminA: Removed a hold
+[2025-05-05T03:03:42.907238500] Admin AdminB: Reset password
+[2025-05-05T03:03:42.907238500] Admin AdminB: Issued refund
+[2025-05-05T03:03:42.907738500] Admin AdminB: AdminB: Reset password
+[2025-05-05T03:03:42.907738500] Admin AdminB: AdminB: Issued refund
