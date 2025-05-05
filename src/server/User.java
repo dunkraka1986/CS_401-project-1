@@ -2,9 +2,10 @@ package server;
 
 import java.io.Serializable;
 
-enum Role {STUDENT, ADMIN}
-
 public abstract class User implements Serializable {
+	
+	public enum Role {STUDENT, ADMIN}
+	
 	static private int uniqueId = 0;
 	protected int id; 
 	protected String name; 
