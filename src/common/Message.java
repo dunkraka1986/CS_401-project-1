@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Message implements Serializable {
     protected final Type type;
     protected Status status;
-    protected UserType usertype;
+    protected UserType userType;
     protected String text;
     protected ArrayList<String> list;
 

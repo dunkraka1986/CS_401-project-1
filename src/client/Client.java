@@ -9,6 +9,15 @@ import common.Status;
 
 class Client {
 	
+	/**
+	 * @param args
+	 */
+	/**
+	 * @param args
+	 */
+	/**
+	 * @param args
+	 */
 	public static void main(String[] args) {
 	    Socket socket = null;
 	    ObjectOutputStream out = null;

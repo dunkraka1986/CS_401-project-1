@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import common.Message;
 import common.Type;
+import common.UserType;
 import common.Status;
 
 public class StudentGUI {
@@ -66,13 +67,15 @@ public class StudentGUI {
         JPanel entryPanel = createEntryPanel(cardLayout, cardPanel);
         JPanel loginPanel = createLoginPanel(cardLayout, cardPanel);
         JPanel registerPanel = createRegisterPanel(cardLayout, cardPanel);
-        JPanel appPanel = createAppPanel(cardLayout, cardPanel);
-
+        JPanel studentAppPanel = createStudentAppPanel(cardLayout, cardPanel);
+        JPanel adminAppPanel = CreateAdminAppPanel(cardLayout, cardPanel);
+        
         cardPanel.add(entryPanel, "ENTRY");
         cardPanel.add(loginPanel, "LOGIN");
         cardPanel.add(registerPanel, "REGISTER");
-        cardPanel.add(appPanel, "APP");
-
+        cardPanel.add(studentAppPanel, "STUDENTAPP");
+        cardPanel.add(adminAppPanel, "ADMINAPP");
+        
         mainFrame.add(cardPanel);
         mainFrame.setVisible(true);
     }
@@ -102,7 +105,7 @@ public class StudentGUI {
         registerButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         registerButton.addActionListener(e -> cardLayout.show(cardPanel, "REGISTER"));
-
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 20, 0, 20);
 
@@ -135,16 +138,20 @@ public class StudentGUI {
         detailPanel.setBorder(BorderFactory.createEmptyBorder(300, 10, 300, 700));
         
         JPanel userNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel userNameLabel = new JLabel("First Name:");
+        JLabel userNameLabel = new JLabel("First and Last Name:");
         JTextField userNameField = new JTextField(15);
         userNamePanel.add(userNameLabel);
         userNamePanel.add(userNameField);
         
         JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel passwordLabel = new JLabel("Last Name:");
+        JLabel passwordLabel = new JLabel("Password:");
         JPasswordField passwordField = new JPasswordField(15);
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
+        
+        JPanel checkboxPanel = new JPanel();
+        JCheckBox box = new JCheckBox("Are you an Admin");
+        checkboxPanel.add(box);
         
         JButton submitButton = new JButton("Submit");
 	    submitButton.setSize(50, 25);
@@ -152,16 +159,21 @@ public class StudentGUI {
 	    submitButton.addActionListener(e -> {
 	        String userName = userNameField.getText().trim();
 	        String password = new String(passwordField.getPassword());
-
+	        boolean isAdmin = box.isSelected();
+	        		
 	        if (userName.isEmpty() || password.isEmpty()) {
 	            JOptionPane.showMessageDialog(panel,
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
+	        UserType userType = UserType.STUDENT;
+	        if (isAdmin) {
+	        	userType = UserType.ADMIN;
+	        }
 
 	        String student = userName + "," + password;
 	        
-	        Message textMsg = new Message(Type.LOGIN, Status.NULL, student);
+	        Message textMsg = new Message(Type.LOGIN, Status.NULL, userType, student);
 	        try {
 				out.writeObject(textMsg);
 			} catch (IOException e1) {
@@ -179,7 +191,11 @@ public class StudentGUI {
 	        
 	        	case SUCCESS:
 	        		JOptionPane.showMessageDialog(panel,"Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
-	        		cardLayout.show(cardPanel, "APP");
+	        		// displays based on student or admin for cardPanel
+	        		if (loginResponse.getUserType() == UserType.ADMIN) {
+	        			cardLayout.show(cardPanel, "ADMINAPP");
+	        		}
+	        		cardLayout.show(cardPanel, "STUDENTAPP");
 	        		break;
 	        		
 	        	case FAILED:
@@ -197,6 +213,7 @@ public class StudentGUI {
 	    
 	    detailPanel.add(userNamePanel);
 	    detailPanel.add(passwordPanel);
+	    detailPanel.add(checkboxPanel);
 	    detailPanel.add(submitButton);
 	    
 	    panel.add(detailPanel, BorderLayout.EAST);
@@ -301,12 +318,31 @@ public class StudentGUI {
 	    return panel;
     }
     
-    private JPanel createAppPanel(CardLayout cardLayout, JPanel cardPanel) {
+    private JPanel createStudentAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
-    	JPanel appContainer = new JPanel(new BorderLayout());
-		
-		
+    	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
+		/*
+		 * actions:
+		 * 		view course schedule
+		 * 		add course to schedule
+		 * 		remove course from schedule
+		 * 		view course catalog
+		 * 		view course details
+		 * 		see holds
+		 * 		see balance
+		 */
+		// view courses button
+    	JPanel actionPanel = new JPanel();
+    	actionPanel.setLayout(new GridBagLayout());
 		
 		return appContainer;
 	}
+    
+    private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
+    	
+    	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
+    	
+    	
+    	return appContainer;
+    }
 }
