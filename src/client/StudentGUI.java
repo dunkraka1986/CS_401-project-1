@@ -160,7 +160,7 @@ public class StudentGUI {
 	        String userName = userNameField.getText().trim();
 	        String password = new String(passwordField.getPassword());
 	        boolean isAdmin = box.isSelected();
-	        		
+	        
 	        if (userName.isEmpty() || password.isEmpty()) {
 	            JOptionPane.showMessageDialog(panel,
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -192,7 +192,7 @@ public class StudentGUI {
 	        	case SUCCESS:
 	        		JOptionPane.showMessageDialog(panel,"Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
 	        		// displays based on student or admin for cardPanel
-	        		if (loginResponse.getUserType() == UserType.ADMIN) {
+	        		if (userType == UserType.ADMIN) {
 	        			cardLayout.show(cardPanel, "ADMINAPP");
 	        		}
 	        		cardLayout.show(cardPanel, "STUDENTAPP");
