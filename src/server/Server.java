@@ -233,15 +233,45 @@ class Server {
 			}
 		}
 
-		private void handleEnrollCourse(Message message) {
+		private void handleEnrollCourse(Message message) throws IOException {
 			
 			System.out.println("Recevied enrollment request");
 			String title = message.getText();
 			
 			Course course = uni.getCourseByTitle(title);
 			
-			currentStudent.enrollInCourse(course);
-		    course.addStudent(currentStudent);
+			String status = currentStudent.enrollInCourse(course);
+			
+			Message response;
+			
+			switch(status) {
+			
+			case "hold":
+				
+				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.FAILED, 
+					    "Enrollment failed: Adding this course exceeds your maximum unit limit. Please drop a course or contact an advisor.");
+				out.writeObject(response);
+				
+				break;
+				
+			case "units":
+				
+				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.FAILED, 
+					    "Enrollment blocked: A hold on your account is preventing course enrollment. Please contact the registrar’s office or your advisor.");
+				out.writeObject(response);
+				
+				break;
+				
+			case "YAY":
+				
+				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.SUCCESS, 
+					    "Brilliant! You’re now enrolled in the course. Time to sharpen your wand and your mind!");
+				out.writeObject(response);
+			    course.addStudent(currentStudent);
+				break;
+			
+				
+			}
 		    
 		    currentStudent.save();
 			
