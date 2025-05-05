@@ -159,16 +159,11 @@ public class StudentGUI {
 	    submitButton.addActionListener(e -> {
 	        String userName = userNameField.getText().trim();
 	        String password = new String(passwordField.getPassword());
-	        boolean isAdmin = box.isSelected();
 	        
 	        if (userName.isEmpty() || password.isEmpty()) {
 	            JOptionPane.showMessageDialog(panel,
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
-	        }
-	        UserType userType = UserType.STUDENT;
-	        if (isAdmin) {
-	        	userType = UserType.ADMIN;
 	        }
 
 	        String student = userName + "," + password;
