@@ -335,6 +335,13 @@ public class StudentGUI {
     	JPanel actionPanel = new JPanel();
     	actionPanel.setLayout(new GridBagLayout());
 		
+    	JButton viewCourseButton = new JButton("View My Schedule");
+    	JButton addCourseButton = new JButton("Add Course");
+    	JButton removeCourseButton = new JButton("Remove Course");
+    	JButton ViewCourseCatalogButton = new JButton("View Catalog");
+    	JButton seeHoldsButton = new JButton("View Holds");
+    	JButton seeBalanceButton = new JButton("View Balance");
+    	
 		return appContainer;
 	}
     
