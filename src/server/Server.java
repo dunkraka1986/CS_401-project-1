@@ -196,6 +196,8 @@ class Server {
 			
 			student.save();
 			
+		    ReportLogger.logSystemEvent("Registered new student: " + name);
+			
 		}
 	}
 	
