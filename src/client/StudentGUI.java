@@ -177,11 +177,6 @@ public class StudentGUI {
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-	        
-	        if (userName.equalsIgnoreCase("Albus Dumbledore") &&
-	        		password.equals("magic")) {
-	        	userType = UserType.ADMIN;
-	        }
 
 	        String student = userName + "," + password;
 	        
@@ -441,6 +436,9 @@ public class StudentGUI {
 	private JPanel createCourseCatalogPagePanel() {
 		
 		JPanel panel = new JPanel();
+		
+		
+		
 		return panel;
 	}
 

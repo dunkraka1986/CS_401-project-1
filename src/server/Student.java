@@ -21,15 +21,15 @@ public class Student extends User{
 	}
 	
 	public void addCourse(Course course) {
-		if(hasHold()) {
+		if (hasHold()) {
 			return;
 		}
-		if(canEnroll(course.getUnits())) {
+		if (!canEnroll(course.getUnits())) {
 			return;
 		}
-		
 		enrolledCourses.add(course);
 	}
+
 	
 	public void dropCourse(Course course) { 
 		enrolledCourses.remove(course); 
