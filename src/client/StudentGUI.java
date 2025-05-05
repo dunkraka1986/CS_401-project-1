@@ -555,16 +555,46 @@ public class StudentGUI {
 	        Message enrollRequest = new Message(Type.ENROLL_COURSE_STUDENT, Status.NULL, title);
 	        try {
 	            out.writeObject(enrollRequest);
+	            
+	            Message response = null;
+	            
+	            try {
+					response = (Message) in.readObject();
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+	            
+	            switch(response.getStatus()) {
+	            	
+	            case FAILED:
+	            	String failMessage = response.getText();
+	                JOptionPane.showMessageDialog(dialog, 
+	                    "Enrollment failed: " + failMessage, 
+	                    "Enrollment Error", 
+	                    JOptionPane.ERROR_MESSAGE);
+	            	break;
+	            	
+	            case SUCCESS:
+	            	
+	            	enrolledCourseTitles.add(title);
+	                enroll.setEnabled(false);
+	                JOptionPane.showMessageDialog(dialog, 
+	                    response.getText(), 
+	                    "Enrollment Success", 
+	                    JOptionPane.INFORMATION_MESSAGE);
+	                
+	                enrolledCourseTitles.add(title);
 
-	            enrolledCourseTitles.add(title);
+		            enroll.setEnabled(false);
 
-	            enroll.setEnabled(false);
-
-	            JOptionPane.showMessageDialog(dialog, "Enrolled successfully in " + title, "Enrollment", JOptionPane.INFORMATION_MESSAGE);
-
-	            Timer timer = new Timer(500, event -> dialog.dispose());
-	            timer.setRepeats(false);
-	            timer.start();
+		            Timer timer = new Timer(500, event -> dialog.dispose());
+		            timer.setRepeats(false);
+		            timer.start();
+	                
+	            	break;
+	            
+	            }
+	            
 
 	        } catch (IOException ex) {
 	            ex.printStackTrace();
