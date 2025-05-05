@@ -128,6 +128,10 @@ public class Course {
 		return this.professor;
 	}
 	
+	public String toString() {
+		return title + "," + description + "," + professor + "," + capacity + "," + units + "," + enrolledStudents.size() + "," + waitlistedStudents.size();
+	}
+	
 	public ArrayList<Student> getEnrolledStudents(){
 		return this.enrolledStudents;
 	}

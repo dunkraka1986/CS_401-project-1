@@ -18,6 +18,7 @@ class Server {
 	public static void main(String[] args) 
 	{
 		initializeCourses();
+		uni.loadStudents();
 		
 		ServerSocket server = null;
 
@@ -56,10 +57,11 @@ class Server {
 	}
 
 	private static class ClientHandler implements Runnable {
+		
+		private Student currentStudent;
 		private final Socket clientSocket;
 	    private ObjectInputStream in;
 	    private ObjectOutputStream out;
-	    private boolean loggedIn = false;
 
 		public ClientHandler(Socket socket)
 		{
@@ -92,7 +94,6 @@ class Server {
 	                
 	                    case CONNECT:
 	                    	System.out.println("Received connection request.");
-	                        loggedIn = true;
 	                        Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Welcome!");
 	                        out.writeObject(loginResponse);
 	                        break;
@@ -102,11 +103,30 @@ class Server {
 	                        break;
 	
 	                    case LOGOUT:
-	                    	
 	                    	System.out.println("Client logged out.");
                             clientSocket.close();
 	                        return;
 	                        
+	                    case GET_CATALOG:
+	                    	handleGetCatalog(message);
+	                    	break;
+	                    	
+	                    case ENROLL_COURSE_STUDENT:
+	                    	handleEnrollCourse(message);
+	                    	break;
+	                    	
+	                    case DROP_COURSE:
+	                    	handleDropCourse(message);
+	                    	break;
+	                    	
+	                    case LIST_COURSES:
+	                    	handleGetList(message);
+	                    	break;
+	                    	
+	                    case PROFILE:
+	                    	handleProfile(message);
+	                    	break;
+	
 	                    case CREATE_COURSE:
 	                    	createCourse(message);
 	                    	break;
@@ -161,6 +181,74 @@ class Server {
 			}
 		}
 		
+		private void handleProfile(Message message) {
+			
+			System.out.println("Recevied profile request");
+			
+			String info = currentStudent.toString();
+			
+			Message infor = new Message(Type.PROFILE, Status.SUCCESS, info);
+			
+			try {
+				out.writeObject(infor);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+
+		private void handleDropCourse(Message message) {
+			
+			System.out.println("Recevied drop request");
+			String title = message.getText();
+			
+			Course course = uni.getCourseByTitle(title);
+			
+			currentStudent.dropCourse(course);
+		    course.removeStudent(currentStudent);
+		    
+		    currentStudent.save();
+			
+		}
+
+		private void handleGetList(Message message) {
+			
+			System.out.println("Received list request.");
+			
+			ArrayList<String> list = currentStudent.getCorses();
+			
+			Message listResponse = new Message(Type.LIST_COURSES, Status.SUCCESS, "", list);
+			try {
+				out.writeObject(listResponse);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		private void handleEnrollCourse(Message message) {
+			
+			System.out.println("Recevied enrollment request");
+			String title = message.getText();
+			
+			Course course = uni.getCourseByTitle(title);
+			
+			currentStudent.enrollInCourse(course);
+		    course.addStudent(currentStudent);
+		    
+		    currentStudent.save();
+			
+		}
+
+		private void handleGetCatalog(Message message) throws IOException {
+			
+			System.out.println("Received catalog request.");
+			
+			ArrayList<String> list = uni.getCorse();
+			
+			Message catalogResponse = new Message(Type.GET_CATALOG, Status.SUCCESS, "", list);
+			out.writeObject(catalogResponse);
+		}
+
 		public void handleLogin(Message message) throws IOException {
 			
 			System.out.println("Received login request.");
@@ -180,7 +268,6 @@ class Server {
 			File file = new File(folder + name);
 			
 			if(name.equalsIgnoreCase("Albus Dumbledore")) {
-				System.out.println("BRUHHH");
 				Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome Back Fool");
 				out.writeObject(loginResponse);
 				return;
@@ -202,8 +289,15 @@ class Server {
 		            // String storedPhone = fileParts[2].trim();  // optional, you can use this later
 
 		            if (password.equals(storedPassword)) {
+		            	currentStudent = uni.getStudentByName(storedName);
 		                System.out.println("Login successful.");
-		                Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Login successful. Welcome, " + storedName + "!");
+		                
+		                ArrayList<String> enrolledTitles = new ArrayList<>();
+		                for (Course c : currentStudent.getCourseList()) {
+		                    enrolledTitles.add(c.getTitle());
+		                }
+		                
+		                Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, "Login successful. Welcome, " + storedName + "!", enrolledTitles);
 		                out.writeObject(loginResponse);
 		            } else {
 		                System.out.println("Login failed: incorrect password.");
@@ -431,7 +525,7 @@ class Server {
 	    ArrayList<Course> courses = new ArrayList<>();
 
 	    courses.add(new Course("Defense Against the Dark Arts", 
-	        "Learn to defend against dark creatures, curses, and hexes.", 
+	        "Learn to defend against dark creatures curses and hexes.", 
 	        "Professor Lupin", 30, 3));
 
 	    courses.add(new Course("Potions", 
@@ -447,11 +541,11 @@ class Server {
 	        "Professor McGonagall", 25, 4));
 
 	    courses.add(new Course("Charms", 
-	        "Learn charms for levitation, unlocking, and more.", 
+	        "Learn charms for levitation unlocking and more.", 
 	        "Professor Flitwick", 30, 3));
 
 	    courses.add(new Course("Astronomy", 
-	        "Explore stars, planets, and magical constellations.", 
+	        "Explore stars planets and magical constellations.", 
 	        "Professor Sinistra", 20, 2));
 
 	    courses.add(new Course("Care of Magical Creatures", 

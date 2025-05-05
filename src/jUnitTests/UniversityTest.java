@@ -50,7 +50,7 @@ public class UniversityTest {
         courses.add(new Course("Math", "Algebra and Geometry", "Prof. Einstein", 20, 3));
         uni.setCourses(courses);
 
-        ArrayList<String> courseList = uni.getCorses(); // Typo in original method name is kept as-is
+        ArrayList<String> courseList = uni.getCorse(); // Typo in original method name is kept as-is
 
         assertEquals(1, courseList.size());
         assertNotNull(courseList.get(0)); // Ensure something is returned
