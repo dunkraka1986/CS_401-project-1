@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import common.Message;
 import common.Type;
+import common.UserType;
 import common.Status;
 
 class Server {
@@ -133,6 +134,13 @@ class Server {
 		public void handleLogin(Message message) throws IOException {
 			
 			System.out.println("Received login request.");
+			
+			if (message.getUserType() == UserType.ADMIN) {
+				System.out.println("Login successful.");
+                Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome, Albus Dumbledore!");
+                out.writeObject(loginResponse);
+				return;
+			}
 			
 			String info = message.getText();
 			

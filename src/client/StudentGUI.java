@@ -159,11 +159,16 @@ public class StudentGUI {
 	    submitButton.addActionListener(e -> {
 	        String userName = userNameField.getText().trim();
 	        String password = new String(passwordField.getPassword());
-	        
+	        UserType userType = UserType.STUDENT;
 	        if (userName.isEmpty() || password.isEmpty()) {
 	            JOptionPane.showMessageDialog(panel,
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
+	        }
+	        
+	        if (userName.equalsIgnoreCase("Albus Dumbledore") &&
+	        		password.equals("magic")) {
+	        	userType = UserType.ADMIN;
 	        }
 
 	        String student = userName + "," + password;
@@ -187,7 +192,7 @@ public class StudentGUI {
 	        	case SUCCESS:
 	        		JOptionPane.showMessageDialog(panel,"Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
 	        		// displays based on student or admin for cardPanel
-	        		if (userType == UserType.ADMIN) {
+	        		if (loginResponse.getUserType() == UserType.ADMIN) {
 	        			cardLayout.show(cardPanel, "ADMINAPP");
 	        		}
 	        		cardLayout.show(cardPanel, "STUDENTAPP");
