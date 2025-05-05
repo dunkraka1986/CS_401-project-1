@@ -418,7 +418,7 @@ public class StudentGUI {
         pagesPanel = new JPanel(pagesLayout);
 
         JPanel homePage = new JPanel();
-        JPanel profilePage = createProfilePagePanel();
+        JPanel profilePage = new JPanel();
         JScrollPane courseCatalogPage = createCourseCatalogPagePanel();
         JPanel holdPage = createHoldPagePanel();
         JPanel balancePage = createBalancePagePanel();
@@ -432,7 +432,13 @@ public class StudentGUI {
         pagesLayout.show(pagesPanel, "HOME");
 
         viewCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOME"));
-        viewProfileButton.addActionListener(e -> pagesLayout.show(pagesPanel, "PROFILE"));
+        viewProfileButton.addActionListener(e -> {
+        	SwingUtilities.invokeLater(() -> {
+    		    JPanel updatedHomePage = createProfilePagePanel();
+    		    pagesPanel.add(updatedHomePage, "PROFILE");
+    		});
+        	pagesLayout.show(pagesPanel, "PROFILE");
+        	});
         viewCourseCatalogButton.addActionListener(e -> pagesLayout.show(pagesPanel, "COURSE CATALOG"));
         seeHoldsButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOLD"));
         seeBalanceButton.addActionListener(e -> pagesLayout.show(pagesPanel, "BALANCE"));
@@ -569,6 +575,17 @@ public class StudentGUI {
     		    JScrollPane updatedHomePage = createHomePagePanel();
     		    pagesPanel.add(updatedHomePage, "HOME");
     		});
+	        
+	        SwingUtilities.invokeLater(() -> {
+            	
+                pagesPanel.remove(pagesPanel.getComponent(2));
+
+                JScrollPane updatedCatalogPage = createCourseCatalogPagePanel();
+                pagesPanel.add(updatedCatalogPage, "COURSE CATALOG");
+
+                CardLayout cl = (CardLayout) pagesPanel.getLayout();
+                cl.show(pagesPanel, "COURSE CATALOG");
+            });
 	    });
 
 	    detailPanel.add(prof);
@@ -594,12 +611,20 @@ public class StudentGUI {
 		}
 	    
 	    Message response = null;
-	    
 	    try {
-			response = (Message) in.readObject();
-		} catch (ClassNotFoundException | IOException e1) {
-			e1.printStackTrace();
-		}
+	        response = (Message) in.readObject();
+	    } catch (ClassNotFoundException | IOException e1) {
+	        e1.printStackTrace();
+	    }
+
+	    if (response == null || response.getStatus() == Status.FAILED) {
+	        JLabel errorLabel = new JLabel("Failed to load profile.");
+	        errorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+	        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        panel.add(errorLabel);
+	        return panel;
+	    }
+
 	    
 	    String info = response.getText();
 	    
@@ -737,6 +762,8 @@ public class StudentGUI {
 	        Message dropRequest = new Message(Type.DROP_COURSE, Status.NULL, title);
 	        try {
 	            out.writeObject(dropRequest);
+	            
+	            enrolledCourseTitles.remove(title);
 
 	            JOptionPane.showMessageDialog(dialog, "Dropped " + title, "Drop", JOptionPane.INFORMATION_MESSAGE);
 	            Timer timer = new Timer(500, event -> dialog.dispose());
@@ -745,7 +772,7 @@ public class StudentGUI {
 
 	            SwingUtilities.invokeLater(() -> {
 	            	
-	                pagesPanel.remove(pagesPanel.getComponent(0)); // assuming it's the first; adjust index if needed
+	                pagesPanel.remove(pagesPanel.getComponent(0));
 
 	                JScrollPane updatedHomePage = createHomePagePanel();
 	                pagesPanel.add(updatedHomePage, "HOME");
@@ -758,6 +785,15 @@ public class StudentGUI {
 	            ex.printStackTrace();
 	            JOptionPane.showMessageDialog(dialog, "Drop failed.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
+	        
+	        SwingUtilities.invokeLater(() -> {
+            	
+                pagesPanel.remove(pagesPanel.getComponent(2));
+
+                JScrollPane updatedCatalogPage = createCourseCatalogPagePanel();
+                pagesPanel.add(updatedCatalogPage, "COURSE CATALOG");
+            });
+	        
 	    });
 
 	    detailPanel.add(prof);
