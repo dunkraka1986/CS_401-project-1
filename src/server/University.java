@@ -32,14 +32,15 @@ public class University {
 		this.courses = courses;
 	}
 	
-	public ArrayList<String> getCorses() {
-		
-		ArrayList<String> coursee = new ArrayList<>();
-		
-		for(Course course: courses) {
-			coursee.add(course.toString());
-		}
-		
-		return coursee;
+	public void addCourse(Course course) {
+		this.courses.add(course);
+	}
+	
+	public List<Course> getCorses() {
+		return this.courses;
+	}
+	
+	public List<Student> getStudents(){
+		return this.students;
 	}
 }

@@ -127,4 +127,8 @@ public class Course {
 	public String getProfessor() {
 		return this.professor;
 	}
+	
+	public ArrayList<Student> getEnrolledStudents(){
+		return this.enrolledStudents;
+	}
 }

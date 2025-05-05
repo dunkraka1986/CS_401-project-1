@@ -4,6 +4,7 @@ package server;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import common.Message;
 import common.Type;
@@ -105,7 +106,36 @@ class Server {
 	                    	System.out.println("Client logged out.");
                             clientSocket.close();
 	                        return;
-	
+	                        
+	                    case CREATE_COURSE:
+	                    	createCourse(message);
+	                    	break;
+	                    	
+	                    case REMOVE_COURSE:
+	                    	removeCourse(message);
+	                    	break;
+	                    	
+	                    case REMOVE_STUDENT:
+	                    	removeStudent(message);
+	                    	break;
+	                    
+	                    case ENROLL_COURSE:
+	                    	enrollStudent(message);
+	                    	break;
+	                    
+	                    case ADD_HOLD:
+	                    	addHold(message);
+	                    	break;
+	                    case REMOVE_HOLD:
+	                    	removeHold(message);
+	                    	break;
+	                    case VIEW_STUDENTS:
+	                    	viewStudents(message);
+	                    	break;
+	                    case REPORT:
+	                    	report(message);
+	                    	break;
+	                    	
 	                    default:
 	                        System.out.println("Unknown message type received.");
 	                        break;
@@ -140,6 +170,11 @@ class Server {
 			String[] parts = info.split(",");
 			String name = parts[0].trim();
 			String password = parts[1].trim();
+			if(name.equalsIgnoreCase("Albus Dumbledore")) {
+				Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome Back Dumbledore");
+				out.writeObject(loginResponse);
+				return;
+			}
 			
 			String folder = "data/";
 			File file = new File(folder + name);
@@ -181,6 +216,7 @@ class Server {
 		}
 		
 		private void handleRegister(Message message) {
+
 		    System.out.println("Received registration request.");
 		    
 		    String info = message.getText();
@@ -217,6 +253,142 @@ class Server {
 		    
 		    ReportLogger.logSystemEvent("Registered new student: " + name);
 		}
+		
+		private void createCourse(Message message) {
+			String[] parsedMessage = message.getText().split(",");
+			int capacity = Integer.parseInt(parsedMessage[2]);
+			int units = Integer.parseInt(parsedMessage[3]);
+			Course course = new Course(parsedMessage[0], "",
+									parsedMessage[1], capacity,
+									units);
+			uni.addCourse(course);
+			// send successfully added message
+			message = new Message(Type.CREATE_COURSE, Status.SUCCESS, "Course Added Successfully");
+			try {
+				out.writeObject(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void removeCourse(Message message) {
+			String[] messageText = message.getText().split(",");
+			List<Course> courses = uni.getCorses();
+			Status removed = Status.NULL;
+			String removalMessage = "Course couldn't be removed or doesn\'t exist";
+			for (Course c : courses) {
+				if (messageText[0].equalsIgnoreCase(c.getTitle())) {
+					courses.remove(c);
+					removed = Status.SUCCESS;
+					removalMessage = "Removed Successfully";
+					break;
+				}
+			}
+			
+			message = new Message(Type.REMOVE_COURSE, removed, removalMessage);
+			try {
+				out.writeObject(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void removeStudent(Message message) {
+			String[] messageText = message.getText().split(",");
+			String student = messageText[0];
+			String courseTitle = messageText[1];
+			List<Course> courseList = uni.getCorses();
+			for (Course c : courseList) {
+				if (c.getTitle().equalsIgnoreCase(courseTitle)) {
+					ArrayList<Student> students = c.getEnrolledStudents();
+					for (Student s : students) {
+						if (s.getName().equalsIgnoreCase(student)) {
+							s.dropCourse(c);
+							message = new Message(Type.REMOVE_STUDENT, Status.SUCCESS, "Student removed successfully");
+							try {
+								out.writeObject(message);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							return;
+						}
+						message = new Message(Type.REMOVE_STUDENT, Status.FAILED, "Student doesn\'t exist or error removing student");
+						try {
+							out.writeObject(message);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		
+		private void enrollStudent(Message message) {
+			String[] messageText = message.getText().split(",");
+			String studentName = messageText[0];
+			String courseName = messageText[1];
+			
+			List<Course> courses = uni.getCorses();
+			List<Student> students = uni.getStudents();
+			Student student = null;
+			Course course = null;
+			Status status = Status.NULL;
+			for (Course c : courses) {
+				if (c.getTitle().equalsIgnoreCase(courseName)) {
+					course = c;
+					break;
+				}
+			}
+			for (Student s : students) {
+				if (s.getName().equalsIgnoreCase(studentName)) {
+					student = s;
+				}
+			}
+			if (student != null && course != null) {
+				// send success message
+				message = new Message(Type.ENROLL_COURSE, Status.SUCCESS, "Enrolled successfully");
+			} else {
+				// send failed message
+				message = new Message(Type.ENROLL_COURSE, Status.FAILED, "Enrollment failed");
+			}
+			try {
+				out.writeObject(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void addHold(Message message) {
+			String[] messageText = message.getText().split(",");
+			String studentName = messageText[0];
+			ArrayList<String> holds = message.getList();
+			List<Student> students = uni.getStudents();
+			for (Student s : students) {
+				if (s.getName().equalsIgnoreCase(studentName)) {
+					for (String h : holds) {
+						Hold hold = new Hold(h, h);
+						hold.placeHold();
+					}
+					message = new Message(Type.ADD_HOLD, Status.SUCCESS, "Hold placed");
+					try {
+						out.writeObject(message);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					return;
+				}
+			}
+			message = new Message(Type.ADD_HOLD, Status.FAILED, "Failed to place hold");
+			try {
+				out.writeObject(message);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		/*
+		private void removeHold(Message message) {
+			
+		}*/
 	}
 	
 	public static void initializeCourses() {

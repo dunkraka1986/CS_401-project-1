@@ -206,6 +206,7 @@ public class StudentGUI {
 	        		// displays based on student or admin for cardPanel
 	        		if (loginResponse.getUserType() == UserType.ADMIN) {
 	        			cardLayout.show(cardPanel, "ADMINAPP");
+	        			break;
 	        		}
 	        		cardLayout.show(cardPanel, "STUDENTAPP");
 	        		break;
@@ -428,37 +429,32 @@ public class StudentGUI {
     }
     
     private JPanel createBalancePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+    	JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createHoldPagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createCourseCatalogPagePanel() {
 		
 		JPanel panel = new JPanel();
-		
-		
-		
-		return null;
+		return panel;
 	}
 
 	private JPanel createProfilePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel createHomePagePanel() {
-		// TODO Auto-generated method stub
-		return null;
+		JPanel panel = new JPanel();
+		return panel;
 	}
 
 	private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
-    	
-    	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
     	/*
     	 * actions:
     	 * 		create course
@@ -470,29 +466,275 @@ public class StudentGUI {
     	 * 		view all students
     	 * 		generate report
     	 */
+    	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
+
     	JPanel operationsPanel = new JPanel();
     	operationsPanel.setLayout(new GridLayout(8, 1, 1, 1));
-    	
+        Font buttonFont = new Font("Arial", Font.PLAIN, 18);
+
     	JButton createCourseButton = new JButton("Create Course");
+    	createCourseButton.setFont(buttonFont);
+    	createCourseButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton removeCourseButton = new JButton("Remove Course");
+    	removeCourseButton.setFont(buttonFont);
+    	removeCourseButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton dropStudentFromCourseButton = new JButton("Drop Student From Course");
+    	dropStudentFromCourseButton.setFont(buttonFont);
+    	dropStudentFromCourseButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton enrollStudentToCourseButton = new JButton("Enroll Student To Course");
+    	enrollStudentToCourseButton.setFont(buttonFont);
+    	enrollStudentToCourseButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton addHoldButton = new JButton("Add Student Hold");
+    	addHoldButton.setFont(buttonFont);
+    	addHoldButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton removeHoldButton = new JButton("Remove Student Hold");
+    	removeHoldButton.setFont(buttonFont);
+    	removeHoldButton.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton viewAllStudents = new JButton("View All Students");
+    	viewAllStudents.setFont(buttonFont);
+    	viewAllStudents.setPreferredSize(new Dimension(500, 40));
+    	
     	JButton generateReportButton = new JButton("Generate Report");
+    	generateReportButton.setFont(buttonFont);
+    	generateReportButton.setPreferredSize(new Dimension(500, 40));
     	
-    	operationsPanel.add(createCourseButton);
-    	operationsPanel.add(removeCourseButton);
-    	operationsPanel.add(dropStudentFromCourseButton);
-    	operationsPanel.add(enrollStudentToCourseButton);
-    	operationsPanel.add(addHoldButton);
-    	operationsPanel.add(removeHoldButton);
-    	operationsPanel.add(viewAllStudents);
-    	operationsPanel.add(generateReportButton);
+    	operationsPanel.add(createCourseButton, BorderLayout.WEST);
+    	operationsPanel.add(removeCourseButton, BorderLayout.WEST);
+    	operationsPanel.add(dropStudentFromCourseButton, BorderLayout.WEST);
+    	operationsPanel.add(enrollStudentToCourseButton, BorderLayout.WEST);
+    	operationsPanel.add(addHoldButton, BorderLayout.WEST);
+    	operationsPanel.add(removeHoldButton, BorderLayout.WEST);
+    	operationsPanel.add(viewAllStudents, BorderLayout.WEST);
+    	operationsPanel.add(generateReportButton, BorderLayout.WEST);
     	
-    	appContainer.add(operationsPanel);
+    	CardLayout pagesLayout = new CardLayout();
+        JPanel pagesPanel = new JPanel(pagesLayout);
+
+        JPanel createCoursePage = createCoursePanel();
+        JPanel removeCoursepage = removeCoursePanel();
+        JPanel dropStudentPage = dropStudentPanel();
+        JPanel enrollStudentPage = enrollStudentPanel();
+        JPanel addHoldPage = addHoldPanel();
+        JPanel removeHoldPage = removeHoldPanel();
+        JPanel viewStudentsPage = viewStudentsPanel();
+        JPanel reportPage = reportPanel();
+
+        pagesPanel.add(createCoursePage, "CREATE COURSE");
+        pagesPanel.add(removeCoursepage, "REMOVE COURSE");
+        pagesPanel.add(dropStudentPage, "DROP STUDENT");
+        pagesPanel.add(enrollStudentPage, "ENROLL STUDENT");
+        pagesPanel.add(addHoldPage, "ADD HOLD");
+        pagesPanel.add(removeHoldPage, "REMOVE HOLD");
+        pagesPanel.add(viewStudentsPage, "VIEW STUDENTS");
+        pagesPanel.add(reportPage, "REPORTS");
+    	
+        // action listeners
+        createCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "CREATE COURSE"));
+        removeCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "REMOVE COURSE"));
+        dropStudentFromCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "DROP STUDENT"));
+        enrollStudentToCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "ENROLL STUDENT"));
+        addHoldButton.addActionListener(e -> pagesLayout.show(pagesPanel, "ADD HOLD"));
+        removeHoldButton.addActionListener(e -> pagesLayout.show(pagesPanel, "REMOVE HOLD"));
+        viewAllStudents.addActionListener(e -> pagesLayout.show(pagesPanel, "VIEW STUDENTS"));
+        generateReportButton.addActionListener(e -> pagesLayout.show(pagesPanel, "REPORTS"));
+
+    	appContainer.add(operationsPanel, BorderLayout.WEST);
+    	appContainer.add(pagesPanel, BorderLayout.CENTER);
     	
     	return appContainer;
     }
+	
+	private JPanel createCoursePanel() {		
+		JPanel panel = new JPanel();
+		
+		JPanel courseTitlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel courseTitleLabel = new JLabel("Course Title");
+		JTextField courseTitle = new JTextField(15);
+		courseTitlePanel.add(courseTitleLabel);
+		courseTitlePanel.add(courseTitle);
+		
+		JPanel professorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel professorLabel = new JLabel("Professor name");
+		JTextField professorName = new JTextField(15);
+		professorPanel.add(professorLabel);
+		professorPanel.add(professorName);
+		
+		JPanel capacityPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel capacityLabel = new JLabel("Class Capacity");
+		JTextField capacity = new JTextField(15);
+		capacityPanel.add(capacityLabel);
+		capacityPanel.add(capacity);
+		
+		JPanel unitsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel unitsLabel = new JLabel("Course Units");
+		JTextField units = new JTextField(15);
+		unitsPanel.add(unitsLabel);
+		unitsPanel.add(units);
+		
+		JPanel submitPanel = new JPanel();
+		JButton submit = new JButton("Submit Course");
+		submitPanel.add(submit);
+		
+		panel.add(courseTitlePanel);
+		panel.add(professorPanel);
+		panel.add(capacityPanel);
+		panel.add(unitsPanel);
+		panel.add(submit);
+		
+		submit.addActionListener(e -> {
+			// sends message to create course to server
+			Message message = null;
+			String title = courseTitle.getText();
+			String professor = professorName.getText();
+			String courseCapacity = capacity.getText();
+			String courseUnits = units.getText();
+			
+			String courseText = title + "," + professor + ","
+								+ courseCapacity + "," + courseUnits;
+			
+			message = new Message(Type.CREATE_COURSE, Status.NULL, courseText);
+			try {
+				out.writeObject(message);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			
+			Message createCourseResponse = null;
+			try {
+				createCourseResponse = (Message) in.readObject();
+			} catch (ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+			String msg = message.getText();
+			switch(createCourseResponse.getStatus()) {
+			case SUCCESS:
+        		JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
+				break;
+			case FAILED:
+        		JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.ERROR_MESSAGE);
+				break;
+			default:
+				break;
+			}
+		});
+		return panel;
+	}
+	
+	private JPanel removeCoursePanel() {
+		JPanel panel = new JPanel();
+		
+		JPanel courseTitlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel courseTitleLabel = new JLabel("Course Title");
+		JTextField courseTitle = new JTextField(15);
+		courseTitlePanel.add(courseTitleLabel);
+		courseTitlePanel.add(courseTitle);
+		
+		JPanel submitPanel = new JPanel();
+		JButton submit = new JButton("Submit Course");
+		submitPanel.add(submit);
+		
+		panel.add(courseTitlePanel);
+		panel.add(submit);
+		
+		submit.addActionListener(e -> {
+			Message removeCourseResponse = null;
+			try {
+				removeCourseResponse = (Message) in.readObject();
+			} catch (ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+			String msg = removeCourseResponse.getText();
+			switch(removeCourseResponse.getStatus()) {
+			case SUCCESS:
+				JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
+				break;
+			case FAILED:
+				JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.ERROR_MESSAGE);
+				break;
+			default:
+				break;
+			}
+		});
+		return panel;
+	}
+	
+	private JPanel dropStudentPanel() {
+		JPanel panel = new JPanel();
+		
+		JPanel studentNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel studentNameLabel = new JLabel("Student Name");
+		JTextField studentName = new JTextField(15);
+		studentNamePanel.add(studentNameLabel);
+		studentNamePanel.add(studentName);
+		
+		JPanel submitPanel = new JPanel();
+		JButton submit = new JButton("drop student btn");
+		submitPanel.add(submit);
+		
+		panel.add(studentNamePanel);
+		panel.add(studentNamePanel);
+		panel.add(submitPanel);
+		
+		submit.addActionListener(e -> {
+			Message removeStudentresponse = null;
+			try {
+				removeStudentresponse = (Message) in.readObject();
+			} catch (ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+			String msg = removeStudentresponse.getText();
+			switch(removeStudentresponse.getStatus()) {
+			case SUCCESS:
+				JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
+				break;
+			case FAILED:
+				JOptionPane.showMessageDialog(panel, msg, "Hogwarts", JOptionPane.ERROR_MESSAGE);
+				break;
+			default:
+				break;
+			}
+		});
+		return panel;
+	}
+	
+	private JPanel enrollStudentPanel() {
+		JPanel panel = new JPanel();
+		JButton btn = new JButton("enroll student btn");
+		panel.add(btn);
+		return panel;
+	}
+	
+	private JPanel addHoldPanel() {
+		JPanel panel = new JPanel();
+		JButton btn = new JButton("add hold btn");
+		panel.add(btn);
+		return panel;
+	}
+	
+	private JPanel removeHoldPanel() {
+		JPanel panel = new JPanel();
+		JButton btn = new JButton("remove hold btn");
+		panel.add(btn);
+		return panel;
+	}
+	
+	private JPanel viewStudentsPanel() {
+		JPanel panel = new JPanel();
+		JButton btn = new JButton("view students btn");
+		panel.add(btn);
+		return panel;
+	}
+	
+	private JPanel reportPanel() {
+		JPanel panel = new JPanel();
+		JButton btn = new JButton("report btn");
+		panel.add(btn);
+		return panel;
+	}
 }
