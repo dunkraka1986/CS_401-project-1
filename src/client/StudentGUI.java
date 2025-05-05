@@ -401,6 +401,8 @@ public class StudentGUI {
         
         appContainer.add(sidePanel, BorderLayout.WEST);
         
+        
+        
         return appContainer;
     }
     
