@@ -31,4 +31,15 @@ public class University {
 	public void setCourses(ArrayList<Course> courses) {
 		this.courses = courses;
 	}
+	
+	public ArrayList<String> getCorses() {
+		
+		ArrayList<String> coursee = new ArrayList<>();
+		
+		for(Course course: courses) {
+			coursee.add(course.toString());
+		}
+		
+		return coursee;
+	}
 }

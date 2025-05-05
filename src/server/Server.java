@@ -188,24 +188,41 @@ class Server {
 		}
 		
 		private void handleRegister(Message message) {
-			
-			System.out.println("Received registration request.");
-			
-			String info = message.getText();
-			
-			String[] parts = info.split(",");
-			String name = parts[0].trim();
-			String password = parts[1].trim();
-			String phoneNumber = parts[2].trim();
-			
-			Student student = new Student(name, password, Long.parseLong(phoneNumber));
-			
-			uni.addStudent(student);
-			
-			student.save();
-			
+		    System.out.println("Received registration request.");
+		    
+		    String info = message.getText();
+		    String[] parts = info.split(",");
+		    String name = parts[0].trim();
+		    String password = parts[1].trim();
+		    String phoneNumber = parts[2].trim();
+		    
+		    String folder = "data/";
+		    File file = new File(folder + name);
+		    
+		    if (file.exists()) {
+		        System.out.println("Registration failed: Student already exists.");
+		        try {
+		            Message response = new Message(Type.REGISTER, Status.FAILED, "Registration failed: Student already exists.");
+		            out.writeObject(response);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return;
+		    }
+		    
+		    Student student = new Student(name, password, Long.parseLong(phoneNumber));
+		    uni.addStudent(student);
+		    student.save();
+		    
+		    System.out.println("Student registered successfully: " + name);
+		    try {
+		        Message response = new Message(Type.REGISTER, Status.SUCCESS, "Registration successful! Welcome, " + name + "!");
+		        out.writeObject(response);
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		    
 		    ReportLogger.logSystemEvent("Registered new student: " + name);
-			
 		}
 	}
 	

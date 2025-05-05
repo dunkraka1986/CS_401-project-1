@@ -1,0 +1,4 @@
+[2025-05-04T18:38:43.297055900] System: Registered new student: 1 1
+[2025-05-04T18:38:47.863841500] System: Registered new student: 1 1
+[2025-05-04T18:46:18.029078600] System: Registered new student: Aakkash Muthukumar
+[2025-05-04T18:49:29.048470] System: Registered new student: 2 2

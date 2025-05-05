@@ -153,8 +153,20 @@ public class StudentGUI {
         JCheckBox box = new JCheckBox("Are you an Admin");
         checkboxPanel.add(box);
         
-        JButton submitButton = new JButton("Submit");
+        JPanel buttons = new JPanel();
+
+	    JButton submitButton = new JButton("Submit");
 	    submitButton.setSize(50, 25);
+	    
+	    JButton returnButton = new JButton("Return");
+	    returnButton.setSize(50, 25);
+	    
+	    returnButton.addActionListener(e -> {
+	    	cardLayout.show(cardPanel, "ENTRY");
+	    });
+	    
+	    buttons.add(submitButton);
+	    buttons.add(returnButton);
 	    
 	    submitButton.addActionListener(e -> {
 	        String userName = userNameField.getText().trim();
@@ -214,7 +226,7 @@ public class StudentGUI {
 	    detailPanel.add(userNamePanel);
 	    detailPanel.add(passwordPanel);
 	    detailPanel.add(checkboxPanel);
-	    detailPanel.add(submitButton);
+	    detailPanel.add(buttons);
 	    
 	    panel.add(detailPanel, BorderLayout.EAST);
         panel.add(imageLabel, BorderLayout.WEST);
@@ -268,9 +280,22 @@ public class StudentGUI {
         JPasswordField confirmPasswordField = new JPasswordField(15);
         confirmPasswordPanel.add(confirmPasswordLabel);
         confirmPasswordPanel.add(confirmPasswordField);
+        
+        JPanel buttons = new JPanel();
 
 	    JButton submitButton = new JButton("Submit");
 	    submitButton.setSize(50, 25);
+	    
+	    JButton returnButton = new JButton("Return");
+	    returnButton.setSize(50, 25);
+	    
+	    returnButton.addActionListener(e -> {
+	    	cardLayout.show(cardPanel, "ENTRY");
+	    });
+	    
+	    buttons.add(submitButton);
+	    buttons.add(returnButton);
+	    		
 
 	    submitButton.addActionListener(e -> {
 	        String firstName = firstNameField.getText().trim();
@@ -300,9 +325,33 @@ public class StudentGUI {
 				e1.printStackTrace();
 			}
 	        
-	        JOptionPane.showMessageDialog(panel,
-	                "Registration successful!\nWelcome to Hogwarts, " + firstName + " " + lastName,
-	                "Success", JOptionPane.INFORMATION_MESSAGE);
+	        Message registerResponse = null;
+			try {
+				registerResponse = (Message) in.readObject();
+			} catch (ClassNotFoundException | IOException e1) {
+				e1.printStackTrace();
+			}
+	        
+	        switch (registerResponse.getStatus()) {
+	        
+	        	case SUCCESS:
+	        		JOptionPane.showMessageDialog(panel,
+	    	                "Registration successful!\nWelcome to Hogwarts, " + firstName + " " + lastName,
+	    	                "Success", JOptionPane.INFORMATION_MESSAGE);
+	    	        
+	    	        cardLayout.show(cardPanel, "STUDENTAPP");
+	        		break;
+	        		
+	        	case FAILED:
+	        		String message = registerResponse.getText();
+	        		JOptionPane.showMessageDialog(panel, message, "Hogwarts", JOptionPane.ERROR_MESSAGE);
+	        		break;
+	        		
+	        	default:
+                    System.out.println("Unknown message type received.");
+                    break;
+	        	
+	        }	        
 	    });
 
 	    detailPanel.add(firstNamePanel);
@@ -310,7 +359,7 @@ public class StudentGUI {
 	    detailPanel.add(numberPanel);
 	    detailPanel.add(passwordPanel);
 	    detailPanel.add(confirmPasswordPanel);
-	    detailPanel.add(submitButton);
+	    detailPanel.add(buttons);
 	    
 	    panel.add(detailPanel, BorderLayout.EAST);
         panel.add(imageLabel, BorderLayout.WEST);
@@ -319,31 +368,43 @@ public class StudentGUI {
     }
     
     private JPanel createStudentAppPanel(CardLayout cardLayout, JPanel cardPanel) {
-    	
-    	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
-		/*
-		 * actions:
-		 * 		view course schedule
-		 * 		add course to schedule
-		 * 		remove course from schedule
-		 * 		view course catalog
-		 * 		view course details
-		 * 		see holds
-		 * 		see balance
-		 */
-		// view courses button
-    	JPanel actionPanel = new JPanel();
-    	actionPanel.setLayout(new GridBagLayout());
-		
-    	JButton viewCourseButton = new JButton("View My Schedule");
-    	JButton addCourseButton = new JButton("Add Course");
-    	JButton removeCourseButton = new JButton("Remove Course");
-    	JButton ViewCourseCatalogButton = new JButton("View Catalog");
-    	JButton seeHoldsButton = new JButton("View Holds");
-    	JButton seeBalanceButton = new JButton("View Balance");
-    	
-		return appContainer;
-	}
+        JPanel appContainer = new JPanel(new BorderLayout());
+        
+        JPanel sidePanel = new JPanel(new GridLayout(0, 1, 0, 0));
+        
+        Font buttonFont = new Font("Arial", Font.PLAIN, 18);
+        
+        JButton viewCourseButton = new JButton("HOME");
+        viewCourseButton.setPreferredSize(new Dimension(500, 40));
+        viewCourseButton.setFont(buttonFont);
+        sidePanel.add(viewCourseButton);
+        
+        JButton viewProfileButton = new JButton("PROFILE");
+        viewProfileButton.setPreferredSize(new Dimension(500, 40));
+        viewProfileButton.setFont(buttonFont);
+        sidePanel.add(viewProfileButton);
+        
+        JButton viewCourseCatalogButton = new JButton("COURSE CATALOG");
+        viewCourseCatalogButton.setPreferredSize(new Dimension(500, 40));
+        viewCourseCatalogButton.setFont(buttonFont);
+        sidePanel.add(viewCourseCatalogButton);
+        
+        JButton seeHoldsButton = new JButton("HOLDS");
+        seeHoldsButton.setPreferredSize(new Dimension(500, 40));
+        seeHoldsButton.setFont(buttonFont);
+        sidePanel.add(seeHoldsButton);
+        
+        JButton seeBalanceButton = new JButton("BALANCE");
+        seeBalanceButton.setPreferredSize(new Dimension(500, 40));
+        seeBalanceButton.setFont(buttonFont);
+        sidePanel.add(seeBalanceButton);
+        
+        appContainer.add(sidePanel, BorderLayout.WEST);
+        
+        
+        
+        return appContainer;
+    }
     
     private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
