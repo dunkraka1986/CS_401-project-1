@@ -18,7 +18,7 @@ public class Message implements Serializable {
     public Message(Type type, Status status, UserType userType, String text) {
     	this.type = type;
     	this.status = status;
-    	this.usertype = userType;
+    	this.userType = userType;
     	this.text = text;
     }
 
