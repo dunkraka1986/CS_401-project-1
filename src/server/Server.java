@@ -126,13 +126,13 @@ class Server {
 	                    	addHold(message);
 	                    	break;
 	                    case REMOVE_HOLD:
-	                    	removeHold(message);
+	                    	//removeHold(message);
 	                    	break;
 	                    case VIEW_STUDENTS:
-	                    	viewStudents(message);
+	                    	//viewStudents(message);
 	                    	break;
 	                    case REPORT:
-	                    	report(message);
+	                    	//report(message);
 	                    	break;
 	                    	
 	                    default:
@@ -185,8 +185,6 @@ class Server {
 				return;
 			}
 			
-<<<<<<< HEAD
-=======
 			if(!file.exists()) {
 				System.out.println("Login Failed: User not found");
 				Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login Failed: User not found");
@@ -194,7 +192,6 @@ class Server {
 				return;
 			}
 			
->>>>>>> branch 'main' of https://github.com/cramos2003/CS_401-project-1.git
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 		        String line = reader.readLine();  // read first line: name,password,phone
 		        if (line != null) {
