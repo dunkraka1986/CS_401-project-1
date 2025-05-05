@@ -399,14 +399,64 @@ public class StudentGUI {
         seeBalanceButton.setFont(buttonFont);
         sidePanel.add(seeBalanceButton);
         
+        CardLayout pagesLayout = new CardLayout();
+        JPanel pagesPanel = new JPanel(pagesLayout);
+
+        JPanel homePage = createHomePagePanel();
+        JPanel profilePage = createProfilePagePanel();
+        JPanel courseCatalogPage = createCourseCatalogPagePanel();
+        JPanel holdPage = createHoldPagePanel();
+        JPanel balancePage = createBalancePagePanel();
+
+        pagesPanel.add(homePage, "HOME");
+        pagesPanel.add(profilePage, "PROFILE");
+        pagesPanel.add(courseCatalogPage, "COURSE CATALOG");
+        pagesPanel.add(holdPage, "HOLD");
+        pagesPanel.add(balancePage, "BALANCE");
+        
+
+        viewCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOME"));
+        viewProfileButton.addActionListener(e -> pagesLayout.show(pagesPanel, "PROFILE"));
+        viewCourseCatalogButton.addActionListener(e -> pagesLayout.show(pagesPanel, "COURSE CATALOG"));
+        seeHoldsButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOLD"));
+        seeBalanceButton.addActionListener(e -> pagesLayout.show(pagesPanel, "BALANCE"));
+
         appContainer.add(sidePanel, BorderLayout.WEST);
-        
-        
+        appContainer.add(pagesPanel, BorderLayout.CENTER);
         
         return appContainer;
     }
     
-    private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
+    private JPanel createBalancePagePanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private JPanel createHoldPagePanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private JPanel createCourseCatalogPagePanel() {
+		
+		JPanel panel = new JPanel();
+		
+		
+		
+		return null;
+	}
+
+	private JPanel createProfilePagePanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private JPanel createHomePagePanel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
     	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
     	
