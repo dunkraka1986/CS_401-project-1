@@ -31,9 +31,9 @@ public class AdminTest {
 
     @Test
     public void testViewStudentCourses() {
-        student.getCourseList().add(course);  // manually add for simplicity
-        admin.viewStudentCourses(student);    // just ensure no exception is thrown
-        assertTrue(true);  // dummy assertion
+        student.getCourseList().add(course);
+        admin.viewStudentCourses(student);
+        assertTrue(true);
     }
 
     @Test
