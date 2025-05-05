@@ -1,6 +1,9 @@
 package server;
 
 import java.util.*;
+import server.Payment;
+import server.ReportLogger;
+
 
 public class Admin extends User {
 
@@ -69,7 +72,9 @@ public class Admin extends User {
 
     // Admin can apply payment to student balance
     public void applyPaymentToStudent(Student student, double amount) {
-        student.applyPayment(amount);
-        System.out.println("Payment of $" + amount + " applied to " + student.getName());
-    }	
+        student.applyPayment(amount);  // update student balance
+        Payment payment = new Payment(amount, student.getName());  // create payment object
+        ReportLogger.logSystemEvent(payment.toString());  // log to report.txt
+        ReportLogger.logAdminEvent(getName(), "Applied payment of $" + amount + " to " + student.getName());  // log to admin report
+    }
 }
