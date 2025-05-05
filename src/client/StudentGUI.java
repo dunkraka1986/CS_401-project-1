@@ -348,7 +348,39 @@ public class StudentGUI {
     private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	
     	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
+    	/*
+    	 * actions:
+    	 * 		create course
+    	 * 		remove course
+    	 * 		drop student from course
+    	 * 		enroll student in course
+    	 * 		add hold to student
+    	 * 		remove hold from student
+    	 * 		view all students
+    	 * 		generate report
+    	 */
+    	JPanel operationsPanel = new JPanel();
+    	operationsPanel.setLayout(new GridLayout(8, 1, 1, 1));
     	
+    	JButton createCourseButton = new JButton("Create Course");
+    	JButton removeCourseButton = new JButton("Remove Course");
+    	JButton dropStudentFromCourseButton = new JButton("Drop Student From Course");
+    	JButton enrollStudentToCourseButton = new JButton("Enroll Student To Course");
+    	JButton addHoldButton = new JButton("Add Student Hold");
+    	JButton removeHoldButton = new JButton("Remove Student Hold");
+    	JButton viewAllStudents = new JButton("View All Students");
+    	JButton generateReportButton = new JButton("Generate Report");
+    	
+    	operationsPanel.add(createCourseButton);
+    	operationsPanel.add(removeCourseButton);
+    	operationsPanel.add(dropStudentFromCourseButton);
+    	operationsPanel.add(enrollStudentToCourseButton);
+    	operationsPanel.add(addHoldButton);
+    	operationsPanel.add(removeHoldButton);
+    	operationsPanel.add(viewAllStudents);
+    	operationsPanel.add(generateReportButton);
+    	
+    	appContainer.add(operationsPanel);
     	
     	return appContainer;
     }
