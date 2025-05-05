@@ -177,11 +177,6 @@ public class StudentGUI {
 	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-	        
-	        if (userName.equalsIgnoreCase("Albus Dumbledore") &&
-	        		password.equals("magic")) {
-	        	userType = UserType.ADMIN;
-	        }
 
 	        String student = userName + "," + password;
 	        
@@ -206,6 +201,7 @@ public class StudentGUI {
 	        		// displays based on student or admin for cardPanel
 	        		if (loginResponse.getUserType() == UserType.ADMIN) {
 	        			cardLayout.show(cardPanel, "ADMINAPP");
+	        			break;
 	        		}
 	        		cardLayout.show(cardPanel, "STUDENTAPP");
 	        		break;
@@ -440,6 +436,9 @@ public class StudentGUI {
 	private JPanel createCourseCatalogPagePanel() {
 		
 		JPanel panel = new JPanel();
+		
+		
+		
 		return panel;
 	}
 

@@ -151,16 +151,16 @@ class Server {
 			String folder = "data/";
 			File file = new File(folder + name);
 			
-			if(!file.exists()) {
-				System.out.println("Login Failed: User not found");
-				Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login Failed: User not found");
+			if(name.equalsIgnoreCase("Albus Dumbledore")) {
+				System.out.println("BRUHHH");
+				Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome Back Fool");
 				out.writeObject(loginResponse);
 				return;
 			}
 			
-			if(name.equalsIgnoreCase("Albus Dumbledore")) {
-				System.out.println("BRUHHH");
-				Message loginResponse = new Message(Type.LOGIN, Status.SUCCESS, UserType.ADMIN, "Login successful. Welcome Back Dumbledore");
+			if(!file.exists()) {
+				System.out.println("Login Failed: User not found");
+				Message loginResponse = new Message(Type.LOGIN, Status.FAILED, "Login Failed: User not found");
 				out.writeObject(loginResponse);
 				return;
 			}
