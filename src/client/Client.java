@@ -2,7 +2,6 @@ package client;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import common.Message;
 import common.Type;
 import common.Status;
