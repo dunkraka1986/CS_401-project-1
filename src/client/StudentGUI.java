@@ -4,6 +4,8 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import javax.swing.*;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import common.Message;
@@ -13,10 +15,16 @@ import common.Status;
 
 public class StudentGUI {
 	
-	static JFrame mainFrame;
-	static JPanel buttonPannel;
-	static JPanel schedule;
-	static JPanel courseCatalog;
+	private ArrayList<String> enrolledCourseTitles = new ArrayList<>();
+	
+	private JPanel pagesPanel;
+	
+	private static String student;
+	
+	private static JFrame mainFrame;
+	private static JPanel buttonPannel;
+	private static JPanel schedule;
+	private static JPanel courseCatalog;
 	
     private Socket socket;
     private ObjectInputStream in;
@@ -149,10 +157,6 @@ public class StudentGUI {
         passwordPanel.add(passwordLabel);
         passwordPanel.add(passwordField);
         
-        JPanel checkboxPanel = new JPanel();
-        JCheckBox box = new JCheckBox("Are you an Admin");
-        checkboxPanel.add(box);
-        
         JPanel buttons = new JPanel();
 
 	    JButton submitButton = new JButton("Submit");
@@ -197,6 +201,10 @@ public class StudentGUI {
 	        switch (loginResponse.getStatus()) {
 	        
 	        	case SUCCESS:
+	        		StudentGUI.student = userName;
+	        		if (loginResponse.getList() != null) {
+	        		    enrolledCourseTitles = new ArrayList<>(loginResponse.getList());
+	        		}
 	        		JOptionPane.showMessageDialog(panel,"Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
 	        		// displays based on student or admin for cardPanel
 	        		if (loginResponse.getUserType() == UserType.ADMIN) {
@@ -204,6 +212,12 @@ public class StudentGUI {
 	        			break;
 	        		}
 	        		cardLayout.show(cardPanel, "STUDENTAPP");
+	        		
+	        		SwingUtilities.invokeLater(() -> {
+	        		    JScrollPane updatedHomePage = createHomePagePanel();
+	        		    pagesPanel.add(updatedHomePage, "HOME");
+	        		});
+
 	        		break;
 	        		
 	        	case FAILED:
@@ -221,7 +235,6 @@ public class StudentGUI {
 	    
 	    detailPanel.add(userNamePanel);
 	    detailPanel.add(passwordPanel);
-	    detailPanel.add(checkboxPanel);
 	    detailPanel.add(buttons);
 	    
 	    panel.add(detailPanel, BorderLayout.EAST);
@@ -331,6 +344,7 @@ public class StudentGUI {
 	        switch (registerResponse.getStatus()) {
 	        
 	        	case SUCCESS:
+	        		StudentGUI.student = firstName  + " " + lastName;
 	        		JOptionPane.showMessageDialog(panel,
 	    	                "Registration successful!\nWelcome to Hogwarts, " + firstName + " " + lastName,
 	    	                "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -395,12 +409,17 @@ public class StudentGUI {
         seeBalanceButton.setFont(buttonFont);
         sidePanel.add(seeBalanceButton);
         
+        JButton logoutButton = new JButton("LOGOUT");
+        logoutButton.setPreferredSize(new Dimension(500, 40));
+        logoutButton.setFont(buttonFont);
+        sidePanel.add(logoutButton);
+        
         CardLayout pagesLayout = new CardLayout();
-        JPanel pagesPanel = new JPanel(pagesLayout);
+        pagesPanel = new JPanel(pagesLayout);
 
-        JPanel homePage = createHomePagePanel();
+        JPanel homePage = new JPanel();
         JPanel profilePage = createProfilePagePanel();
-        JPanel courseCatalogPage = createCourseCatalogPagePanel();
+        JScrollPane courseCatalogPage = createCourseCatalogPagePanel();
         JPanel holdPage = createHoldPagePanel();
         JPanel balancePage = createBalancePagePanel();
 
@@ -410,12 +429,34 @@ public class StudentGUI {
         pagesPanel.add(holdPage, "HOLD");
         pagesPanel.add(balancePage, "BALANCE");
         
+        pagesLayout.show(pagesPanel, "HOME");
 
         viewCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOME"));
         viewProfileButton.addActionListener(e -> pagesLayout.show(pagesPanel, "PROFILE"));
         viewCourseCatalogButton.addActionListener(e -> pagesLayout.show(pagesPanel, "COURSE CATALOG"));
         seeHoldsButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOLD"));
         seeBalanceButton.addActionListener(e -> pagesLayout.show(pagesPanel, "BALANCE"));
+        logoutButton.addActionListener(e -> {
+        	int result = JOptionPane.showConfirmDialog(
+    	            mainFrame,
+    	            "Are you sure you want to exit?",
+    	            "Exit Confirmation",
+    	            JOptionPane.YES_NO_OPTION
+    	        );
+
+    	        if (result == JOptionPane.YES_OPTION) {
+    	            try {
+    	                out.writeObject(new Message(Type.LOGOUT, Status.NULL, ""));
+    	                out.close();
+    	                in.close();
+    	                socket.close();
+    	            } catch (IOException ex) {
+    	                ex.printStackTrace();
+    	            }
+
+    	            System.exit(0);
+    	        }
+        });
 
         appContainer.add(sidePanel, BorderLayout.WEST);
         appContainer.add(pagesPanel, BorderLayout.CENTER);
@@ -433,24 +474,300 @@ public class StudentGUI {
 		return panel;
 	}
 
-	private JPanel createCourseCatalogPagePanel() {
+	private JScrollPane createCourseCatalogPagePanel() {
 		
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(new GridLayout(0,1,0,10));
 		
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
+		Message textMsg = new Message(Type.GET_CATALOG, Status.NULL, "");
 		
-		return panel;
+		try {
+			out.writeObject(textMsg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Message catalogResponse = null;
+		try {
+			catalogResponse = (Message) in.readObject();
+		} catch (ClassNotFoundException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		ArrayList<String> list = catalogResponse.getList();
+		
+		for(String courseInfo: list) {
+			
+			String[] parts = courseInfo.split(",");
+			String title = parts[0].trim();
+			String description = parts[1].trim();
+			String professor = parts[2].trim();
+			String capacity = parts[3].trim();
+			String units = parts[4].trim();
+			String enrolled = parts[5].trim();
+			String waitlisted = parts[6].trim();
+			
+			JButton course = new JButton(title.toUpperCase() + "           Capcity:" + enrolled + "/" + capacity + "            Units: " + units);
+			
+			course.addActionListener(e -> {
+				showCourseDetails(title, description, professor, capacity, units, enrolled, waitlisted);
+			});
+			
+			course.setPreferredSize(new Dimension(900, 70));
+			
+			panel.add(course);
+		}
+		
+		JScrollPane scrollPane = new JScrollPane(panel);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		return scrollPane;
 	}
+
+	private void showCourseDetails(String title, String description, String professor, String capacity, String units, String enrolled, String waitlisted) {
+	    JDialog dialog = new JDialog(mainFrame, title, true);
+	    dialog.setSize(500, 450);
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setLayout(new BorderLayout(10,10));
+
+	    JPanel detailPanel = new JPanel();
+	    detailPanel.setLayout(new GridLayout(3,1,5,5));
+	    detailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 50));
+
+	    JLabel prof = new JLabel(professor.toUpperCase());
+	    JLabel desc = new JLabel("DESCRIPTION: " + description);
+	    JButton enroll = new JButton("ENROLL");
+
+	    // Check if already enrolled and disable button
+	    if (enrolledCourseTitles.contains(title)) {
+	        enroll.setEnabled(false);
+	    }
+
+	    enroll.addActionListener(e -> {
+	        Message enrollRequest = new Message(Type.ENROLL_COURSE, Status.NULL, title);
+	        try {
+	            out.writeObject(enrollRequest);
+
+	            enrolledCourseTitles.add(title);
+
+	            enroll.setEnabled(false);
+
+	            JOptionPane.showMessageDialog(dialog, "Enrolled successfully in " + title, "Enrollment", JOptionPane.INFORMATION_MESSAGE);
+
+	            Timer timer = new Timer(500, event -> dialog.dispose());
+	            timer.setRepeats(false);
+	            timer.start();
+
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(dialog, "Enrollment failed.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	        
+	        SwingUtilities.invokeLater(() -> {
+    		    JScrollPane updatedHomePage = createHomePagePanel();
+    		    pagesPanel.add(updatedHomePage, "HOME");
+    		});
+	    });
+
+	    detailPanel.add(prof);
+	    detailPanel.add(desc);
+	    detailPanel.add(enroll);
+
+	    dialog.add(detailPanel);
+	    dialog.setVisible(true);
+	}
+
 
 	private JPanel createProfilePagePanel() {
-		JPanel panel = new JPanel();
-		return panel;
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	    
+	    Message msg = new Message(Type.PROFILE, Status.NULL, "");
+	    
+	    try {
+			out.writeObject(msg);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    
+	    Message response = null;
+	    
+	    try {
+			response = (Message) in.readObject();
+		} catch (ClassNotFoundException | IOException e1) {
+			e1.printStackTrace();
+		}
+	    
+	    String info = response.getText();
+	    
+	    String[] parts = info.split(",");
+	    String name = parts[0];
+	    String phone = parts[2];
+	    // Title
+	    JLabel titleLabel = new JLabel("MY PROFILE");
+	    titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+	    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(titleLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+	    // Student Name
+	    JLabel nameLabel = new JLabel("Name: " + name);
+	    nameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+	    nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(nameLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+	    // Placeholder phone and email (you can wire real data later)
+	    JLabel phoneLabel = new JLabel("Phone: " + phone);
+	    phoneLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+	    phoneLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(phoneLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+	    JLabel emailLabel = new JLabel("Email: [Not Available]");
+	    emailLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+	    emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(emailLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+	    // Enrolled Courses header
+	    JLabel coursesLabel = new JLabel("Enrolled Courses:");
+	    coursesLabel.setFont(new Font("Arial", Font.BOLD, 20));
+	    coursesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(coursesLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+
+	    // List of enrolled courses
+	    if (enrolledCourseTitles.isEmpty()) {
+	        JLabel noCoursesLabel = new JLabel("You are not enrolled in any courses.");
+	        noCoursesLabel.setFont(new Font("Arial", Font.ITALIC, 16));
+	        noCoursesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        panel.add(noCoursesLabel);
+	    } else {
+	        for (String courseTitle : enrolledCourseTitles) {
+	            JLabel courseLabel = new JLabel("- " + courseTitle);
+	            courseLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+	            courseLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	            panel.add(courseLabel);
+	            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+	        }
+	    }
+
+	    return panel;
 	}
 
-	private JPanel createHomePagePanel() {
-		JPanel panel = new JPanel();
-		return panel;
+
+	private JScrollPane createHomePagePanel() {
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+	    // Add the "MY SCHEDULE" label at the top
+	    JLabel headerLabel = new JLabel("MY SCHEDULE");
+	    headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+	    headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(headerLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 10))); // spacing below the label
+
+	    Message textMsg = new Message(Type.LIST_COURSES, Status.NULL, "");
+
+	    try {
+	        out.writeObject(textMsg);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    Message listResponse = null;
+	    try {
+	        listResponse = (Message) in.readObject();
+	    } catch (ClassNotFoundException | IOException e1) {
+	        e1.printStackTrace();
+	    }
+
+	    ArrayList<String> list = listResponse.getList();
+
+	    for (String courseInfo : list) {
+
+	        String[] parts = courseInfo.split(",");
+	        String title = parts[0].trim();
+	        String description = parts[1].trim();
+	        String professor = parts[2].trim();
+	        String capacity = parts[3].trim();
+	        String units = parts[4].trim();
+	        String enrolled = parts[5].trim();
+	        String waitlisted = parts[6].trim();
+
+	        JButton course = new JButton(title.toUpperCase() + "           Capacity:" + enrolled + "/" + capacity + "            Units: " + units);
+
+	        course.addActionListener(e -> {
+	            showListDetails(title, description, professor, capacity, units, enrolled, waitlisted);
+	        });
+
+	        course.setMaximumSize(new Dimension(900, 70));
+	        panel.add(course);
+	        panel.add(Box.createRigidArea(new Dimension(0, 5))); // spacing between buttons
+	    }
+
+	    JScrollPane scrollPane = new JScrollPane(panel);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+	    return scrollPane;
 	}
+
+
+	private void showListDetails(String title, String description, String professor, String capacity, String units, String enrolled, String waitlisted) {
+	    JDialog dialog = new JDialog(mainFrame, title, true);
+	    dialog.setSize(500, 450);
+	    dialog.setLocationRelativeTo(mainFrame);
+	    dialog.setLayout(new BorderLayout(10,10));
+
+	    JPanel detailPanel = new JPanel();
+	    detailPanel.setLayout(new GridLayout(3,1,5,5));
+	    detailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 50));
+
+	    JLabel prof = new JLabel(professor.toUpperCase());
+	    JLabel desc = new JLabel("DESCRIPTION: " + description);
+	    JButton drop = new JButton("DROP");
+
+	    drop.addActionListener(e -> {
+	        Message dropRequest = new Message(Type.DROP_COURSE, Status.NULL, title);
+	        try {
+	            out.writeObject(dropRequest);
+
+	            JOptionPane.showMessageDialog(dialog, "Dropped " + title, "Drop", JOptionPane.INFORMATION_MESSAGE);
+	            Timer timer = new Timer(500, event -> dialog.dispose());
+	            timer.setRepeats(false);
+	            timer.start();
+
+	            SwingUtilities.invokeLater(() -> {
+	            	
+	                pagesPanel.remove(pagesPanel.getComponent(0)); // assuming it's the first; adjust index if needed
+
+	                JScrollPane updatedHomePage = createHomePagePanel();
+	                pagesPanel.add(updatedHomePage, "HOME");
+
+	                CardLayout cl = (CardLayout) pagesPanel.getLayout();
+	                cl.show(pagesPanel, "HOME");
+	            });
+
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(dialog, "Drop failed.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    });
+
+	    detailPanel.add(prof);
+	    detailPanel.add(desc);
+	    detailPanel.add(drop);
+
+	    dialog.add(detailPanel);
+	    dialog.setVisible(true);
+	}
+
 
 	private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
     	

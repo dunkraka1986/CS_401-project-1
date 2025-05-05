@@ -3,108 +3,123 @@ package server;
 import java.io.*;
 import java.util.*;
 
-public class Student extends User{
-	
-	private long phoneNumber;
-	private ArrayList<Course> enrolledCourses = new ArrayList<Course>();
-	private ArrayList<Hold> Holds = new ArrayList<Hold>();
-	private double balance;
-	private int unitCap = 18;
-	
-	public Student(String name, String password, long phoneNumber) { 
+public class Student extends User {
+
+    private long phoneNumber;
+    private ArrayList<Course> enrolledCourses = new ArrayList<>();
+    private ArrayList<Hold> holds = new ArrayList<>();
+    private double balance;
+    private int unitCap = 18;
+
+    public Student(String name, String password, long phoneNumber) {
         super(name, password);
         this.phoneNumber = phoneNumber;
     }
-	
-	public Role getRole() {
-		return Role.STUDENT;
-	}
-	
-	public void addCourse(Course course) {
-		if(hasHold()) {
-			return;
-		}
-		if(canEnroll(course.getUnits())) {
-			return;
-		}
-		
-		enrolledCourses.add(course);
-	}
-	
-	public void dropCourse(Course course) { 
-		enrolledCourses.remove(course); 
-	}
-	
-	public ArrayList<Course> getCourseList() {
-		return enrolledCourses;
-	}
-	
-	public boolean hasHold() {
-		if(Holds.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-	
-	public ArrayList<Hold> getHold(){
-		return Holds;
-	}
-	
-	public void setHold(Hold hold) {
-		Holds.add(hold);
-	}
-	
-	public void setBalance(double balance) {
-		this.balance = balance;
-	}
-	
-	public double getBalance() {
-		return balance;
-	}
-	
-	public void applyPayment(double amt) { 
-        balance = balance - amt;
+
+    public Role getRole() {
+        return Role.STUDENT;
     }
-	
-	public boolean canEnroll(int unit) {
-		int maxUnit = 0;
+
+    // ✅ Enroll in course with unit + hold checks
+    public String enrollInCourse(Course course) {
+        if (course == null) {
+            return "null";
+        }
+        if (hasHold()) {
+            return "hold";
+        }
+        if (!canEnroll(course.getUnits())) {
+            return "units";
+        }
+        if (!enrolledCourses.contains(course)) {
+            enrolledCourses.add(course);
+        }
+        return "YAY";
+    }
+
+    // ✅ Add course directly (no checks) → used when loading from file
+    public void addCourse(Course course) {
+        if (course != null && !enrolledCourses.contains(course)) {
+            enrolledCourses.add(course);
+        }
+    }
+
+    public void dropCourse(Course course) {
+        enrolledCourses.remove(course);
+    }
+
+    public ArrayList<Course> getCourseList() {
+        return enrolledCourses;
+    }
+    
+    public ArrayList<String> getCorses() {
+		
+		ArrayList<String> coursee = new ArrayList<>();
+		
 		for(Course course: enrolledCourses) {
-			maxUnit += course.getUnits();
+			coursee.add(course.toString());
 		}
 		
-		maxUnit += unit;
-		
-        return maxUnit <= unitCap; 
+		return coursee;
+	}
+
+    public boolean hasHold() {
+        return !holds.isEmpty();
     }
-	
-	public void save() {
-	    try {
-	        String folder = "data/";
-	        File dir = new File(folder);
-	        if (!dir.exists()) {
-	            if (dir.mkdirs()) {
-	            } else {
-	            }
-	        }
 
-	        BufferedWriter writer = new BufferedWriter(new FileWriter(folder + name));
-	        writer.write(name + "," + password + "," + phoneNumber);
-	        writer.newLine();
+    public ArrayList<Hold> getHold() {
+        return holds;
+    }
 
-	        for (int i = 0; i < enrolledCourses.size(); i++) {
-	            writer.write(enrolledCourses.get(i).toString());
-	            writer.newLine();
-	        }
+    public void setHold(Hold hold) {
+        holds.add(hold);
+    }
 
-	        writer.close();
-	        System.out.println("Saved file to " + folder + name);
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	}
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
-	
-	public String toString() {
-		return name + "," + password + "," + phoneNumber;
-	}
+    public double getBalance() {
+        return balance;
+    }
+
+    public void applyPayment(double amt) {
+        balance -= amt;
+    }
+
+    public boolean canEnroll(int unitsToAdd) {
+        int currentUnits = enrolledCourses.stream()
+                .mapToInt(Course::getUnits)
+                .sum();
+        return currentUnits + unitsToAdd <= unitCap;
+    }
+
+    public void save() {
+        try {
+            String folder = "data/";
+            File dir = new File(folder);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(folder + name));
+            writer.write(name + "," + password + "," + phoneNumber);
+            writer.newLine();
+
+            for (Course course : enrolledCourses) {
+                writer.write(course.getTitle());
+                writer.newLine();
+            }
+
+            writer.close();
+            System.out.println("Saved file to " + folder + name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String toString() {
+        return name + "," + password + "," + phoneNumber;
+    }
+
 }

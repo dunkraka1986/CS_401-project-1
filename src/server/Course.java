@@ -127,4 +127,8 @@ public class Course {
 	public String getProfessor() {
 		return this.professor;
 	}
+	
+	public String toString() {
+		return title + "," + description + "," + professor + "," + capacity + "," + units + "," + enrolledStudents.size() + "," + waitlistedStudents.size();
+	}
 }

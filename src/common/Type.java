@@ -6,9 +6,11 @@ public enum Type {
 	LOGIN,
 	TEXT,
 	LOGOUT,
+	GET_CATALOG,
     LIST_COURSES, 
     ENROLL_COURSE, 
     DROP_COURSE, 
     VIEW_BALANCE, 
-    PAY_BALANCE
+    PAY_BALANCE,
+    PROFILE
 }

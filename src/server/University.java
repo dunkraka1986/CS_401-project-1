@@ -1,5 +1,6 @@
 package server;
 
+import java.io.*;
 import java.util.*;
 
 public class University {
@@ -32,6 +33,28 @@ public class University {
 		this.courses = courses;
 	}
 	
+	public Student getStudentByName(String name) {
+	    for (Student student : students) {
+	        if (student.getName().equalsIgnoreCase(name)) {
+	            return student;
+	        }
+	    }
+	    return null;
+	}
+	
+	public List<Student> getAllStudents() {
+	    return new ArrayList<>(students);
+	}
+
+	public Course getCourseByTitle(String title) {
+	    for (Course course : courses) {
+	        if (course.getTitle().equalsIgnoreCase(title)) {
+	            return course;
+	        }
+	    }
+	    return null;
+	}
+	
 	public ArrayList<String> getCorses() {
 		
 		ArrayList<String> coursee = new ArrayList<>();
@@ -41,5 +64,54 @@ public class University {
 		}
 		
 		return coursee;
+	}
+	
+	public void loadStudents() {
+	    File folder = new File("data/");
+	    if (!folder.exists() || !folder.isDirectory()) {
+	        System.out.println("Data folder not found. No students loaded.");
+	        return;
+	    }
+
+	    File[] files = folder.listFiles();
+	    if (files == null) {
+	        System.out.println("No student files found in data folder.");
+	        return;
+	    }
+
+	    for (File file : files) {
+	        if (file.isFile()) {
+	            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+	                String line = reader.readLine(); // Read first line: name,password,phone
+	                if (line != null) {
+	                    String[] parts = line.split(",");
+	                    if (parts.length >= 3) {
+	                        String name = parts[0].trim();
+	                        String password = parts[1].trim();
+	                        long phoneNumber = Long.parseLong(parts[2].trim());
+
+	                        Student student = new Student(name, password, phoneNumber);
+
+	                        while ((line = reader.readLine()) != null) {
+	                            String courseTitle = line.trim();
+	                            Course course = getCourseByTitle(courseTitle);
+	                            if (course != null) {
+	                                student.addCourse(course);
+	                                course.addStudent(student);
+	                            } else {
+	                                System.out.println("Warning: Course '" + courseTitle + "' not found for student '" + name + "'");
+	                            }
+	                        }
+
+	                        this.addStudent(student);
+	                        System.out.println("Loaded student: " + name);
+	                    }
+	                }
+	            } catch (IOException e) {
+	                System.out.println("Failed to load student from file: " + file.getName());
+	                e.printStackTrace();
+	            }
+	        }
+	    }
 	}
 }
