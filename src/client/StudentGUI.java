@@ -1307,35 +1307,55 @@ public class StudentGUI {
 	}
 	
 	private JPanel reportPanel() {
-		JPanel panel = new JPanel();
-		
-		JPanel reportDataPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		ArrayList<JLabel> data = new ArrayList<JLabel>();
-		
-		JPanel generatePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JButton generateButton = new JButton("Generate Report");
-		generateButton.setPreferredSize(new Dimension(500, 500));
-		generatePanel.add(generateButton);
-		
-		generateButton.addActionListener(e -> {
-			Message reportResponse = null;
-			try {
-				reportResponse = (Message) in.readObject();
-			} catch(ClassNotFoundException | IOException e1) {
-				e1.printStackTrace();
-			}
-			String[] reportFileData = reportResponse.getText().split(",");
-			
-			for (int i = 0; i < reportFileData.length; i++) {
-				JLabel newData = new JLabel(reportFileData[i]);
-				data.add(newData);
-				reportDataPanel.add(data.get(i));
-			}
-		});
-		
-		panel.add(reportDataPanel);
-		panel.add(generatePanel);
-		
-		return panel;
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BorderLayout());
+
+	    JPanel reportDataPanel = new JPanel();
+	    reportDataPanel.setLayout(new BoxLayout(reportDataPanel, BoxLayout.Y_AXIS));
+	    JScrollPane scrollPane = new JScrollPane(reportDataPanel);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+	    JPanel generatePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    JButton generateButton = new JButton("Generate Report");
+	    generateButton.setPreferredSize(new Dimension(200, 40));
+	    generatePanel.add(generateButton);
+
+	    generateButton.addActionListener(e -> {
+	        try {
+	            // This sends a report message to the server.
+	            Message reportRequest = new Message(Type.REPORT, Status.NULL, "");
+	            out.writeObject(reportRequest);
+
+	            // This receives the response from the server.
+	            Message reportResponse = (Message) in.readObject();
+
+	            if (reportResponse.getStatus() == Status.SUCCESS) {
+	                reportDataPanel.removeAll();
+
+	                String[] reportFileData = reportResponse.getText().split(",");
+	                for (String line : reportFileData) {
+	                    JLabel entryLabel = new JLabel(line.trim());
+	                    entryLabel.setFont(new Font("Monospaced", Font.PLAIN, 14));
+	                    reportDataPanel.add(entryLabel);
+	                }
+
+	                reportDataPanel.revalidate();
+	                reportDataPanel.repaint();
+	            } else {
+	                JOptionPane.showMessageDialog(panel, "Report failed: " + reportResponse.getText(),
+	                        "Report Error", JOptionPane.ERROR_MESSAGE);
+	            }
+
+	        } catch (IOException | ClassNotFoundException ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(panel, "Error generating report.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    });
+
+	    panel.add(scrollPane, BorderLayout.CENTER);
+	    panel.add(generatePanel, BorderLayout.SOUTH);
+
+	    return panel;
 	}
 }
