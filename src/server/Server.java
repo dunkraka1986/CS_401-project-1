@@ -248,8 +248,8 @@ class Server {
 			
 			case "hold":
 				
-				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.FAILED, 
-					    "Enrollment failed: Adding this course exceeds your maximum unit limit. Please drop a course or contact an advisor.");
+				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.FAILED,
+					    "Enrollment blocked: A hold on your account is preventing course enrollment. Please visit the Hold page or contact the registrar’s office or your advisor.");
 				out.writeObject(response);
 				
 				break;
@@ -257,7 +257,7 @@ class Server {
 			case "units":
 				
 				response = new Message(Type.ENROLL_COURSE_STUDENT, Status.FAILED, 
-					    "Enrollment blocked: A hold on your account is preventing course enrollment. Please contact the registrar’s office or your advisor.");
+					    "Enrollment failed: Adding this course exceeds your maximum unit limit. Please drop a course or contact an advisor.");
 				out.writeObject(response);
 				
 				break;
@@ -379,6 +379,8 @@ class Server {
 		    }
 		    
 		    Student student = new Student(name, password, Long.parseLong(phoneNumber));
+		    Hold hold = new Hold("1", "You have not been assigned to a Hogwarts house yet.");
+		    student.setHold(hold);
 		    uni.addStudent(student);
 		    student.save();
 		    
