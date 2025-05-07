@@ -49,3 +49,6 @@
 [2025-05-05T03:03:42.907738500] Admin AdminB: AdminB: Issued refund
 [2025-05-05T10:49:22.036215800] System: Registered new student: john doe
 [2025-05-05T12:31:43.539578600] System: Registered new student: 3 3
+[2025-05-07T05:08:13.503240500] System: Svein Quintos logged in.
+[2025-05-07T05:08:28.767175600] System: Svein Quintos dropped Defense Against the Dark Arts
+[2025-05-07T05:08:33.460965800] System: Svein Quintos logged out.
