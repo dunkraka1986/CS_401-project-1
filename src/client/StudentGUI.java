@@ -458,7 +458,7 @@ public class StudentGUI {
         JPanel homePage = new JPanel();
 	    JPanel profilePage = new JPanel();
 	    JScrollPane courseCatalogPage = createCourseCatalogPagePanel();
-	    JPanel holdPage = createHoldPagePanel();
+	    JPanel holdPage = new JPanel();
 	    JPanel balancePage = createBalancePagePanel();
 
         pagesPanel.add(homePage, "HOME");
@@ -482,7 +482,13 @@ public class StudentGUI {
         });
 
         viewCourseCatalogButton.addActionListener(e -> pagesLayout.show(pagesPanel, "COURSE CATALOG"));
-        seeHoldsButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOLD"));
+        seeHoldsButton.addActionListener(e -> {
+        	SwingUtilities.invokeLater(() -> {
+                JPanel updatedProfile = createHoldPagePanel();
+                pagesPanel.add(updatedProfile, "HOLD");
+                pagesLayout.show(pagesPanel, "HOLD");
+            });
+        });
         seeBalanceButton.addActionListener(e -> pagesLayout.show(pagesPanel, "BALANCE"));
 
         logoutButton.addActionListener(e -> {
@@ -594,10 +600,11 @@ public class StudentGUI {
     }
 
 
-	private JPanel createHoldPagePanel() {
-		JPanel panel = new JPanel();
-		return panel;
-	}
+    private JPanel createHoldPagePanel() {
+    	JPanel panel = new JPanel();
+        return panel;
+    }
+
 	
 	private JScrollPane createCourseCatalogPagePanel() {
 	    JPanel panel = new JPanel();
@@ -716,9 +723,6 @@ public class StudentGUI {
 	    dialog.setLayout(new BorderLayout(10,10));
 	    dialog.getContentPane().setBackground(new Color(245, 245, 220)); // parchment background
 
-	    // -------------------------------
-	    // 🏰 Top Banner with Logo + Title
-	    // -------------------------------
 	    JPanel bannerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	    bannerPanel.setBackground(dialog.getContentPane().getBackground());
 
@@ -737,9 +741,6 @@ public class StudentGUI {
 
 	    dialog.add(bannerPanel, BorderLayout.NORTH);
 
-	    // -------------------------------
-	    // 📘 Course Info Section
-	    // -------------------------------
 	    JPanel detailPanel = new JPanel();
 	    detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
 	    detailPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
@@ -875,7 +876,7 @@ public class StudentGUI {
 
 	    infoPanel.add(makeProfileLine("Name: ", name));
 	    infoPanel.add(makeProfileLine("Phone: ", phone));
-	    infoPanel.add(makeProfileLine("Email: ", "[Not Available]"));
+	    infoPanel.add(makeProfileLine("Email: ", name + "@Hogwarts.edu"));
 	    panel.add(infoPanel);
 	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
 

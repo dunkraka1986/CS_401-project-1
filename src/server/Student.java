@@ -5,6 +5,7 @@ import java.util.*;
 
 public class Student extends User {
 
+	private String house;
     private long phoneNumber;
     private ArrayList<Course> enrolledCourses = new ArrayList<>();
     private ArrayList<Hold> holds = new ArrayList<>();
@@ -15,6 +16,7 @@ public class Student extends User {
         super(name, password);
         this.phoneNumber = phoneNumber;
         this.balance = 0.0;
+        this.house = "Not assigned";
     }
 	
 	public Role getRole() {
@@ -126,6 +128,23 @@ public class Student extends User {
 
     public String toString() {
         return name + "," + password + "," + phoneNumber;
+    }
+    
+    public void setHouse(String house) {
+    	holds = new ArrayList<>();
+    	this.house = house;
+    }
+    
+    public String getHouse() {
+    	return house;
+    }
+    
+    public ArrayList<String> getHolds() {
+        ArrayList<String> reasons = new ArrayList<>();
+        for (Hold hold : holds) {
+            reasons.add(hold.getReason());
+        }
+        return reasons;
     }
 
 }

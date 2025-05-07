@@ -173,6 +173,10 @@ class Server {
 	                    	report();
 	                    	break;
 	                    	
+	                    case CLEAR_HOLD:
+	                    	handleClearHold();
+	                    	break;
+	                    	
 	                    default:
 	                        System.out.println("Unknown message type received.");
 	                        break;
@@ -198,6 +202,22 @@ class Server {
 			}
 		}
 		
+		private void handleClearHold() {
+			
+		    System.out.println("Received Clear Hold request");
+		    
+		    currentStudent.setHouse("GRYFFINDOR");
+		    
+		    Message response = new Message(Type.CLEAR_HOLD, Status.SUCCESS, "", currentStudent.getHolds());
+		    
+		    try {
+				out.writeObject(response);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+
 		private void handleProfile(Message message) {
 		    System.out.println("Received profile request");
 
@@ -414,8 +434,6 @@ class Server {
 		    }
 		    
 		    Student student = new Student(name, password, Long.parseLong(phoneNumber));
-		    Hold hold = new Hold("1", "You have not been assigned to a Hogwarts house yet.");
-		    student.setHold(hold);
 		    uni.addStudent(student);
 		    student.save();
 		    

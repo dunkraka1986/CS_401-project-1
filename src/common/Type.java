@@ -20,5 +20,6 @@ public enum Type {
     ADD_HOLD,
     REMOVE_HOLD,
     VIEW_STUDENTS,
-    REPORT
+    REPORT,
+    CLEAR_HOLD
 }
