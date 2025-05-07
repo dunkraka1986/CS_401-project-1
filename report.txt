@@ -52,3 +52,39 @@
 [2025-05-07T05:08:13.503240500] System: Svein Quintos logged in.
 [2025-05-07T05:08:28.767175600] System: Svein Quintos dropped Defense Against the Dark Arts
 [2025-05-07T05:08:33.460965800] System: Svein Quintos logged out.
+[2025-05-07T05:27:47.557471300] System: Svein Quintos logged in.
+[2025-05-07T05:27:56.733320] System: Svein Quintos enrolled in Herbology
+[2025-05-07T05:27:59.621786] System: Svein Quintos enrolled in Defense Against the Dark Arts
+[2025-05-07T05:28:03.352519400] System: Svein Quintos logged out.
+[2025-05-07T05:35:38.185543700] System: Assigned $200.0 payment to Svein Quintos
+[2025-05-07T05:35:42.074967300] System: Assigned $2000.0 payment to Svein Quintos
+[2025-05-07T05:36:30.733880200] System: Svein Quintos logged in.
+[2025-05-07T05:36:39.655260200] System: Svein Quintos logged out.
+[2025-05-07T05:42:30.237121400] System: Svein Quintos logged in.
+[2025-05-07T05:45:46.111531900] System: Svein Quintos logged out.
+[2025-05-07T05:47:17.145997600] System: Svein Quintos logged in.
+[2025-05-07T05:47:21.392843600] System: Svein Quintos logged out.
+[2025-05-07T05:50:46.709588500] System: Svein Quintos logged in.
+[2025-05-07T05:50:57.172450700] System: Svein Quintos logged out.
+[2025-05-07T06:02:02.176695] Admin ADMIN: Assigned $100.0 to Svein Quintos
+[2025-05-07T06:02:29.703928200] System: Svein Quintos logged in.
+[2025-05-07T06:27:08.705969100] System: Svein Quintos logged in.
+[2025-05-07T06:27:15.618653] System: Svein Quintos logged out.
+[2025-05-07T06:27:44.857881300] System: Assigned $1000.0 payment to Svein Quintos
+[2025-05-07T06:28:28.321983900] System: Svein Quintos logged in.
+[2025-05-07T06:28:34.016288800] System: Svein Quintos paid $1000.0. Remaining balance: $0.0
+[2025-05-07T06:28:40.487699200] System: Svein Quintos logged out.
+[2025-05-07T06:29:28.491268200] System: Assigned $1234.0 payment to Svein Quintos
+[2025-05-07T06:29:43.354744] System: Svein Quintos logged in.
+[2025-05-07T06:29:46.984549600] System: Svein Quintos paid $1.0. Remaining balance: $1233.0
+[2025-05-07T06:29:53.311507600] System: Svein Quintos logged out.
+[2025-05-07T06:33:38.287764300] System: Svein Quintos logged in.
+[2025-05-07T06:33:44.088477300] System: Svein Quintos logged out.
+[2025-05-07T06:37:46.645775700] System: Svein Quintos logged in.
+[2025-05-07T06:37:50.149853100] System: Svein Quintos paid $1.0. Remaining balance: $-1.0
+[2025-05-07T06:37:56.393707] System: Svein Quintos paid $-1.0. Remaining balance: $0.0
+[2025-05-07T06:37:59.793186900] System: Svein Quintos logged out.
+[2025-05-07T06:38:55.889338900] System: Assigned $1000.0 payment to Svein Quintos
+[2025-05-07T06:39:25.105028400] System: Svein Quintos logged in.
+[2025-05-07T06:39:30.610478300] System: Svein Quintos paid $1000.0. Remaining balance: $0.0
+[2025-05-07T06:39:48.008822400] System: Svein Quintos logged out.
