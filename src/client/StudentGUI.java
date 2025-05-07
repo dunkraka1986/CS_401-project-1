@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import javax.swing.*;
@@ -88,100 +89,142 @@ public class StudentGUI {
         mainFrame.setVisible(true);
     }
 
-	private JPanel createEntryPanel(CardLayout cardLayout, JPanel cardPanel) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+    private JPanel createEntryPanel(CardLayout cardLayout, JPanel cardPanel) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(new Color(245, 245, 220)); // parchment tone
 
-        JButton loginButton = new JButton("Login");
-        ImageIcon loginIcon = new ImageIcon("Images/login.jpg");
-        Image img = loginIcon.getImage();
-        Image resizedImg = img.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-        loginIcon = new ImageIcon(resizedImg);
-        loginButton.setIcon(loginIcon);
-        loginButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        loginButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-        
+        // 🏰 Title Banner
+        JLabel titleLabel = new JLabel("Welcome to Hogwarts", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 32));
+        titleLabel.setForeground(new Color(102, 51, 0));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(40, 10, 30, 10));
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // 🎓 Center Buttons Panel
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setBackground(panel.getBackground());
+
+        JButton loginButton = createStyledImageButton("Login", "Images/login.jpg");
+        JButton registerButton = createStyledImageButton("Register", "Images/register.jpg");
+
         loginButton.addActionListener(e -> cardLayout.show(cardPanel, "LOGIN"));
-
-        JButton registerButton = new JButton("Register");
-        ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
-        Image img1 = registerIcon.getImage();
-        Image resizedImg1 = img1.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-        registerIcon = new ImageIcon(resizedImg1);
-        registerButton.setIcon(registerIcon);
-        registerButton.setHorizontalTextPosition(SwingConstants.CENTER);
-        registerButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-
         registerButton.addActionListener(e -> cardLayout.show(cardPanel, "REGISTER"));
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 20, 0, 20);
+        gbc.insets = new Insets(0, 40, 0, 40);
 
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(loginButton, gbc);
-
+        buttonPanel.add(loginButton, gbc);
         gbc.gridx = 1;
-        gbc.gridy = 0;
-        panel.add(registerButton, gbc);
+        buttonPanel.add(registerButton, gbc);
+
+        panel.add(buttonPanel, BorderLayout.CENTER);
 
         return panel;
     }
-	
-    private JPanel createLoginPanel(CardLayout cardLayout, JPanel cardPanel) {
-    	
-    	JPanel panel = new JPanel(new BorderLayout(10,10));
-	    
-	    ImageIcon registerIcon = new ImageIcon("Images/login.jpg");
-        Image img1 = registerIcon.getImage();
-        Image resizedImg1 = img1.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
-        registerIcon = new ImageIcon(resizedImg1);
-        
-        JLabel imageLabel = new JLabel();
-        imageLabel.setIcon(registerIcon);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 300, 10, 10));
-        
-        JPanel detailPanel = new JPanel();
-        detailPanel.setLayout(new GridLayout(6,1,1,1));
-        detailPanel.setBorder(BorderFactory.createEmptyBorder(300, 10, 300, 700));
-        
-        JPanel userNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel userNameLabel = new JLabel("First and Last Name:");
-        JTextField userNameField = new JTextField(15);
-        userNamePanel.add(userNameLabel);
-        userNamePanel.add(userNameField);
-        
-        JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField(15);
-        passwordPanel.add(passwordLabel);
-        passwordPanel.add(passwordField);
-        
-        JPanel buttons = new JPanel();
+    
+    private JButton createStyledImageButton(String text, String imagePath) {
+        JButton button = new JButton(text);
 
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.setSize(50, 25);
-	    
+        ImageIcon icon = new ImageIcon(imagePath);
+        Image img = icon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(img);
+
+        button.setIcon(icon);
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        button.setFont(new Font("Serif", Font.BOLD, 18));
+        button.setBackground(new Color(222, 184, 135));
+        button.setForeground(new Color(60, 30, 10));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(new Color(101, 67, 33), 2));
+        button.setPreferredSize(new Dimension(320, 350));
+
+        return button;
+    }
+
+	
+	private JPanel createLoginPanel(CardLayout cardLayout, JPanel cardPanel) {
+	    JPanel panel = new JPanel(new BorderLayout(10, 10));
+	    panel.setBackground(new Color(245, 245, 220)); // parchment background
+
+	    // 🖼️ Left Image Panel with Hogwarts crest
+	    ImageIcon loginIcon = new ImageIcon("Images/login.jpg");
+	    Image img = loginIcon.getImage().getScaledInstance(400, 600, Image.SCALE_SMOOTH);
+	    loginIcon = new ImageIcon(img);
+	    JLabel imageLabel = new JLabel(loginIcon);
+	    imageLabel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 10));
+	    panel.add(imageLabel, BorderLayout.WEST);
+
+	    // 📜 Form Area
+	    JPanel detailPanel = new JPanel();
+	    detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
+	    detailPanel.setBackground(panel.getBackground());
+	    detailPanel.setBorder(BorderFactory.createEmptyBorder(80, 30, 80, 100));
+
+	    // Title
+	    JLabel titleLabel = new JLabel("Welcome to Hogwarts");
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+	    titleLabel.setForeground(new Color(102, 51, 0));
+	    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    detailPanel.add(titleLabel);
+	    detailPanel.add(Box.createVerticalStrut(30));
+
+	    // Username field
+	    JPanel userNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	    userNamePanel.setBackground(panel.getBackground());
+	    JLabel userNameLabel = new JLabel("Full Name:");
+	    userNameLabel.setFont(new Font("Serif", Font.PLAIN, 18));
+	    JTextField userNameField = new JTextField(18);
+	    userNameField.setFont(new Font("Serif", Font.PLAIN, 16));
+	    userNamePanel.add(userNameLabel);
+	    userNamePanel.add(userNameField);
+
+	    // Password field
+	    JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	    passwordPanel.setBackground(panel.getBackground());
+	    JLabel passwordLabel = new JLabel("Password:");
+	    passwordLabel.setFont(new Font("Serif", Font.PLAIN, 18));
+	    JPasswordField passwordField = new JPasswordField(18);
+	    passwordField.setFont(new Font("Serif", Font.PLAIN, 16));
+	    passwordPanel.add(passwordLabel);
+	    passwordPanel.add(passwordField);
+
+	    // Buttons
+	    JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    buttons.setBackground(panel.getBackground());
+
+	    JButton submitButton = new JButton("Login");
+	    styleHogwartsButton(submitButton);
+
 	    JButton returnButton = new JButton("Return");
-	    returnButton.setSize(50, 25);
-	    
-	    returnButton.addActionListener(e -> {
-	    	cardLayout.show(cardPanel, "ENTRY");
-	    });
-	    
+	    styleHogwartsButton(returnButton);
+
+	    returnButton.addActionListener(e -> cardLayout.show(cardPanel, "ENTRY"));
+
 	    buttons.add(submitButton);
 	    buttons.add(returnButton);
-	    
+
+	    // Add components to detail panel
+	    detailPanel.add(userNamePanel);
+	    detailPanel.add(Box.createVerticalStrut(15));
+	    detailPanel.add(passwordPanel);
+	    detailPanel.add(Box.createVerticalStrut(30));
+	    detailPanel.add(buttons);
+
+	    panel.add(detailPanel, BorderLayout.CENTER);
+
+	    // 🔐 Login Button Logic
 	    submitButton.addActionListener(e -> {
 	        String userName = userNameField.getText().trim();
 	        String password = new String(passwordField.getPassword());
 
 	        if (userName.isEmpty() || password.isEmpty()) {
-	            JOptionPane.showMessageDialog(panel,
-	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(panel, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-
 	        try {
 	            // Correct message construction
 	            String student = userName + "," + password;
@@ -220,10 +263,8 @@ public class StudentGUI {
 
 	        } catch (IOException | ClassNotFoundException ex) {
 	            ex.printStackTrace();
-	            JOptionPane.showMessageDialog(panel, "Error communicating with server.", "Error", JOptionPane.ERROR_MESSAGE);
-	        }
+	            JOptionPane.showMessageDialog(panel, "Error communicating with server.", "Error", JOptionPane.ERROR_MESSAGE);	        }
 	    });
-
 	    
 	    detailPanel.add(userNamePanel);
 	    detailPanel.add(passwordPanel);
@@ -234,70 +275,78 @@ public class StudentGUI {
     	
 		return panel;
 	}
-    
-    private JPanel createRegisterPanel(CardLayout cardLayout, JPanel cardPanel) {
-    	
-	    JPanel panel = new JPanel(new BorderLayout(10,10));
-	    
-	    ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
-        Image img1 = registerIcon.getImage();
-        Image resizedImg1 = img1.getScaledInstance(500, 700, Image.SCALE_SMOOTH);
-        registerIcon = new ImageIcon(resizedImg1);
-        
-        JLabel imageLabel = new JLabel();
-        imageLabel.setIcon(registerIcon);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 300, 10, 10));
-        
-        JPanel detailPanel = new JPanel();
-        detailPanel.setLayout(new GridLayout(6,1,1,1));
-        detailPanel.setBorder(BorderFactory.createEmptyBorder(300, 10, 300, 700));
-        
-        JPanel firstNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel firstNameLabel = new JLabel("First Name:");
-        JTextField firstNameField = new JTextField(15);
-        firstNamePanel.add(firstNameLabel);
-        firstNamePanel.add(firstNameField);
-        
-        JPanel lastNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel lastNameLabel = new JLabel("Last Name:");
-        JTextField lastNameField = new JTextField(15);
-        lastNamePanel.add(lastNameLabel);
-        lastNamePanel.add(lastNameField);
-        
-        JPanel numberPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel numberLabel = new JLabel("Phone Number:");
-        JTextField numberField = new JTextField(15);
-        numberPanel.add(numberLabel);
-        numberPanel.add(numberField);
-        
-        JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel passwordLabel = new JLabel("Passowrd:");
-        JPasswordField passwordField = new JPasswordField(15);
-        passwordPanel.add(passwordLabel);
-        passwordPanel.add(passwordField);
-        
-        JPanel confirmPasswordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
-        JPasswordField confirmPasswordField = new JPasswordField(15);
-        confirmPasswordPanel.add(confirmPasswordLabel);
-        confirmPasswordPanel.add(confirmPasswordField);
-        
-        JPanel buttons = new JPanel();
 
-	    JButton submitButton = new JButton("Submit");
-	    submitButton.setSize(50, 25);
-	    
+	private void styleHogwartsButton(JButton button) {
+	    button.setFont(new Font("Serif", Font.BOLD, 18));
+	    button.setBackground(new Color(222, 184, 135)); // parchment beige
+	    button.setForeground(new Color(60, 30, 10));
+	    button.setFocusPainted(false);
+	    button.setBorder(BorderFactory.createLineBorder(new Color(101, 67, 33), 2));
+	    button.setPreferredSize(new Dimension(120, 40));
+	}
+
+	
+	private JPanel createRegisterPanel(CardLayout cardLayout, JPanel cardPanel) {
+	    JPanel panel = new JPanel(new BorderLayout(10, 10));
+	    panel.setBackground(new Color(245, 245, 220)); // parchment tone
+
+	    // 🏰 Image on the left
+	    ImageIcon registerIcon = new ImageIcon("Images/register.jpg");
+	    Image img1 = registerIcon.getImage().getScaledInstance(400, 600, Image.SCALE_SMOOTH);
+	    registerIcon = new ImageIcon(img1);
+	    JLabel imageLabel = new JLabel(registerIcon);
+	    imageLabel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 10));
+	    panel.add(imageLabel, BorderLayout.WEST);
+
+	    // 📜 Form Area
+	    JPanel detailPanel = new JPanel();
+	    detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
+	    detailPanel.setBackground(panel.getBackground());
+	    detailPanel.setBorder(BorderFactory.createEmptyBorder(60, 30, 60, 100));
+
+	    // Title
+	    JLabel titleLabel = new JLabel("Hogwarts Registration");
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 26));
+	    titleLabel.setForeground(new Color(102, 51, 0));
+	    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    detailPanel.add(titleLabel);
+	    detailPanel.add(Box.createVerticalStrut(30));
+
+	    // Helper function to create form rows
+	    detailPanel.add(createLabeledField("First Name:", 18, "Serif", true));
+	    JTextField firstNameField = (JTextField) ((JPanel) detailPanel.getComponent(2)).getComponent(1);
+
+	    detailPanel.add(createLabeledField("Last Name:", 18, "Serif", true));
+	    JTextField lastNameField = (JTextField) ((JPanel) detailPanel.getComponent(3)).getComponent(1);
+
+	    detailPanel.add(createLabeledField("Phone Number:", 18, "Serif", true));
+	    JTextField numberField = (JTextField) ((JPanel) detailPanel.getComponent(4)).getComponent(1);
+
+	    detailPanel.add(createLabeledField("Password:", 18, "Serif", false));
+	    JPasswordField passwordField = (JPasswordField) ((JPanel) detailPanel.getComponent(5)).getComponent(1);
+
+	    detailPanel.add(createLabeledField("Confirm Password:", 18, "Serif", false));
+	    JPasswordField confirmPasswordField = (JPasswordField) ((JPanel) detailPanel.getComponent(6)).getComponent(1);
+
+	    // Buttons
+	    JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    buttons.setBackground(panel.getBackground());
+
+	    JButton submitButton = new JButton("Register");
+	    styleHogwartsButton(submitButton);
+
 	    JButton returnButton = new JButton("Return");
-	    returnButton.setSize(50, 25);
-	    
-	    returnButton.addActionListener(e -> {
-	    	cardLayout.show(cardPanel, "ENTRY");
-	    });
-	    
+	    styleHogwartsButton(returnButton);
+
 	    buttons.add(submitButton);
 	    buttons.add(returnButton);
-	    		
 
+	    detailPanel.add(Box.createVerticalStrut(20));
+	    detailPanel.add(buttons);
+
+	    returnButton.addActionListener(e -> cardLayout.show(cardPanel, "ENTRY"));
+
+	    // ✉️ Submit logic
 	    submitButton.addActionListener(e -> {
 	        String firstName = firstNameField.getText().trim();
 	        String lastName = lastNameField.getText().trim();
@@ -306,161 +355,177 @@ public class StudentGUI {
 	        String confirmPassword = new String(confirmPasswordField.getPassword());
 
 	        if (firstName.isEmpty() || lastName.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-	            JOptionPane.showMessageDialog(panel,
-	                    "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(panel, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
 
 	        if (!password.equals(confirmPassword)) {
-	            JOptionPane.showMessageDialog(panel,
-	                    "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(panel, "Passwords do not match.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
 
 	        String student = firstName + " " + lastName + "," + password + "," + phone;
-	        
 	        Message textMsg = new Message(Type.REGISTER, Status.NULL, student);
+
 	        try {
-				out.writeObject(textMsg);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-	        
-	        Message registerResponse = null;
-			try {
-				registerResponse = (Message) in.readObject();
-			} catch (ClassNotFoundException | IOException e1) {
-				e1.printStackTrace();
-			}
-	        
-	        switch (registerResponse.getStatus()) {
-	        
-	        	case SUCCESS:
-	        		StudentGUI.student = firstName  + " " + lastName;
-	        		JOptionPane.showMessageDialog(panel,
-	    	                "Registration successful!\nWelcome to Hogwarts, " + firstName + " " + lastName,
-	    	                "Success", JOptionPane.INFORMATION_MESSAGE);
-	    	        
-	    	        cardLayout.show(cardPanel, "STUDENTAPP");
-	        		break;
-	        		
-	        	case FAILED:
-	        		String message = registerResponse.getText();
-	        		JOptionPane.showMessageDialog(panel, message, "Hogwarts", JOptionPane.ERROR_MESSAGE);
-	        		break;
-	        		
-	        	default:
-                    System.out.println("Unknown message type received.");
-                    break;
-	        	
-	        }	        
+	            out.writeObject(textMsg);
+	            Message registerResponse = (Message) in.readObject();
+
+	            switch (registerResponse.getStatus()) {
+	                case SUCCESS:
+	                    StudentGUI.student = firstName + " " + lastName;
+	                    JOptionPane.showMessageDialog(panel,
+	                            "Registration successful!\nWelcome to Hogwarts, " + StudentGUI.student,
+	                            "Success", JOptionPane.INFORMATION_MESSAGE);
+	                    cardLayout.show(cardPanel, "STUDENTAPP");
+	                    break;
+	                case FAILED:
+	                    JOptionPane.showMessageDialog(panel, registerResponse.getText(), "Hogwarts", JOptionPane.ERROR_MESSAGE);
+	                    break;
+	                default:
+	                    System.out.println("Unknown message type received.");
+	                    break;
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(panel, "An error occurred during registration.", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
 	    });
 
-	    detailPanel.add(firstNamePanel);
-	    detailPanel.add(lastNamePanel);
-	    detailPanel.add(numberPanel);
-	    detailPanel.add(passwordPanel);
-	    detailPanel.add(confirmPasswordPanel);
-	    detailPanel.add(buttons);
-	    
-	    panel.add(detailPanel, BorderLayout.EAST);
-        panel.add(imageLabel, BorderLayout.WEST);
-
+	    panel.add(detailPanel, BorderLayout.CENTER);
 	    return panel;
-    }
+	}
+
+	
+	private JPanel createLabeledField(String label, int fontSize, String fontName, boolean isTextField) {
+	    JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	    panel.setBackground(new Color(245, 245, 220));
+
+	    JLabel jLabel = new JLabel(label);
+	    jLabel.setFont(new Font(fontName, Font.PLAIN, fontSize));
+	    JTextField field = isTextField ? new JTextField(15) : new JPasswordField(15);
+	    field.setFont(new Font(fontName, Font.PLAIN, 16));
+
+	    panel.add(jLabel);
+	    panel.add(field);
+	    return panel;
+	}
+
     
     private JPanel createStudentAppPanel(CardLayout cardLayout, JPanel cardPanel) {
         JPanel appContainer = new JPanel(new BorderLayout());
-        
-        JPanel sidePanel = new JPanel(new GridLayout(0, 1, 0, 0));
-        
-        Font buttonFont = new Font("Arial", Font.PLAIN, 18);
-        
-        JButton viewCourseButton = new JButton("HOME");
-        viewCourseButton.setPreferredSize(new Dimension(500, 40));
-        viewCourseButton.setFont(buttonFont);
+
+        // 🎨 Themed Sidebar with wider width
+        JPanel sidePanel = new JPanel();
+        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
+        sidePanel.setBackground(new Color(139, 69, 19)); // deep wood tone
+        sidePanel.setPreferredSize(new Dimension(250, 0)); // widened sidebar
+        sidePanel.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
+
+        // 🏰 Hogwarts Logo
+        ImageIcon logoIcon = new ImageIcon("Images/hogwarts.jpg");
+        Image img = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        logoIcon = new ImageIcon(img);
+        JLabel logoLabel = new JLabel(logoIcon);
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidePanel.add(logoLabel);
+        sidePanel.add(Box.createVerticalStrut(30));
+
+        // 🪄 Big Fancy Buttons
+        JButton viewCourseButton = createThemedSidebarButton("HOME");
+        JButton viewProfileButton = createThemedSidebarButton("PROFILE");
+        JButton viewCourseCatalogButton = createThemedSidebarButton("COURSE CATALOG");
+        JButton seeHoldsButton = createThemedSidebarButton("HOLDS");
+        JButton seeBalanceButton = createThemedSidebarButton("BALANCE");
+        JButton logoutButton = createThemedSidebarButton("LOGOUT");
+
         sidePanel.add(viewCourseButton);
-        
-        JButton viewProfileButton = new JButton("PROFILE");
-        viewProfileButton.setPreferredSize(new Dimension(500, 40));
-        viewProfileButton.setFont(buttonFont);
+        sidePanel.add(Box.createVerticalStrut(15));
         sidePanel.add(viewProfileButton);
-        
-        JButton viewCourseCatalogButton = new JButton("COURSE CATALOG");
-        viewCourseCatalogButton.setPreferredSize(new Dimension(500, 40));
-        viewCourseCatalogButton.setFont(buttonFont);
+        sidePanel.add(Box.createVerticalStrut(15));
         sidePanel.add(viewCourseCatalogButton);
-        
-        JButton seeHoldsButton = new JButton("HOLDS");
-        seeHoldsButton.setPreferredSize(new Dimension(500, 40));
-        seeHoldsButton.setFont(buttonFont);
+        sidePanel.add(Box.createVerticalStrut(15));
         sidePanel.add(seeHoldsButton);
-        
-        JButton seeBalanceButton = new JButton("BALANCE");
-        seeBalanceButton.setPreferredSize(new Dimension(500, 40));
-        seeBalanceButton.setFont(buttonFont);
+        sidePanel.add(Box.createVerticalStrut(15));
         sidePanel.add(seeBalanceButton);
-        
-        JButton logoutButton = new JButton("LOGOUT");
-        logoutButton.setPreferredSize(new Dimension(500, 40));
-        logoutButton.setFont(buttonFont);
+        sidePanel.add(Box.createVerticalGlue());
         sidePanel.add(logoutButton);
-        
+
+        // 📄 Pages Panel
         CardLayout pagesLayout = new CardLayout();
         pagesPanel = new JPanel(pagesLayout);
 
         JPanel homePage = new JPanel();
-        JPanel profilePage = new JPanel();
-        JScrollPane courseCatalogPage = createCourseCatalogPagePanel();
-        JPanel holdPage = createHoldPagePanel();
-        JPanel balancePage = createBalancePagePanel();
+	    JPanel profilePage = new JPanel();
+	    JScrollPane courseCatalogPage = createCourseCatalogPagePanel();
+	    JPanel holdPage = createHoldPagePanel();
+	    JPanel balancePage = createBalancePagePanel();
 
         pagesPanel.add(homePage, "HOME");
         pagesPanel.add(profilePage, "PROFILE");
         pagesPanel.add(courseCatalogPage, "COURSE CATALOG");
         pagesPanel.add(holdPage, "HOLD");
         pagesPanel.add(balancePage, "BALANCE");
-        
+
         pagesLayout.show(pagesPanel, "HOME");
 
+        // 📌 Button Actions
         viewCourseButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOME"));
+
         viewProfileButton.addActionListener(e -> {
-        	SwingUtilities.invokeLater(() -> {
-    		    JPanel updatedHomePage = createProfilePagePanel();
-    		    pagesPanel.add(updatedHomePage, "PROFILE");
-    		});
-        	pagesLayout.show(pagesPanel, "PROFILE");
-        	});
+            SwingUtilities.invokeLater(() -> {
+                JPanel updatedProfile = createProfilePagePanel();
+                pagesPanel.add(updatedProfile, "PROFILE");
+                pagesLayout.show(pagesPanel, "PROFILE");
+            });
+            pagesLayout.show(pagesPanel, "PROFILE");
+        });
+
         viewCourseCatalogButton.addActionListener(e -> pagesLayout.show(pagesPanel, "COURSE CATALOG"));
         seeHoldsButton.addActionListener(e -> pagesLayout.show(pagesPanel, "HOLD"));
         seeBalanceButton.addActionListener(e -> pagesLayout.show(pagesPanel, "BALANCE"));
+
         logoutButton.addActionListener(e -> {
-        	int result = JOptionPane.showConfirmDialog(
-    	            mainFrame,
-    	            "Are you sure you want to exit?",
-    	            "Exit Confirmation",
-    	            JOptionPane.YES_NO_OPTION
-    	        );
+            int result = JOptionPane.showConfirmDialog(
+                    mainFrame,
+                    "Are you sure you want to exit?",
+                    "Exit Confirmation",
+                    JOptionPane.YES_NO_OPTION
+            );
 
-    	        if (result == JOptionPane.YES_OPTION) {
-    	            try {
-    	                out.writeObject(new Message(Type.LOGOUT, Status.NULL, ""));
-    	                out.close();
-    	                in.close();
-    	                socket.close();
-    	            } catch (IOException ex) {
-    	                ex.printStackTrace();
-    	            }
+            if (result == JOptionPane.YES_OPTION) {
+                try {
+                    out.writeObject(new Message(Type.LOGOUT, Status.NULL, ""));
+                    out.close();
+                    in.close();
+                    socket.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
-    	            System.exit(0);
-    	        }
+                System.exit(0);
+            }
         });
 
         appContainer.add(sidePanel, BorderLayout.WEST);
         appContainer.add(pagesPanel, BorderLayout.CENTER);
-        
+
         return appContainer;
     }
+
+    
+    private JButton createThemedSidebarButton(String text) {
+        JButton button = new JButton(text);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(200, 40));
+        button.setFont(new Font("Serif", Font.BOLD, 16));
+        button.setBackground(new Color(222, 184, 135)); // parchment beige
+        button.setForeground(new Color(60, 30, 10));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(new Color(101, 67, 33), 2));
+        return button;
+    }
+
     
     private JPanel createBalancePagePanel() {
         JPanel panel = new JPanel();
@@ -533,74 +598,177 @@ public class StudentGUI {
 		JPanel panel = new JPanel();
 		return panel;
 	}
-
+	
 	private JScrollPane createCourseCatalogPagePanel() {
-		
-		JPanel panel = new JPanel(new GridLayout(0,1,0,10));
-		
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		
-		Message textMsg = new Message(Type.GET_CATALOG, Status.NULL, "");
-		
-		try {
-			out.writeObject(textMsg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		Message catalogResponse = null;
-		try {
-			catalogResponse = (Message) in.readObject();
-		} catch (ClassNotFoundException | IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		ArrayList<String> list = catalogResponse.getList();
-		
-		for(String courseInfo: list) {
-			
-			String[] parts = courseInfo.split(",");
-			String title = parts[0].trim();
-			String description = parts[1].trim();
-			String professor = parts[2].trim();
-			String capacity = parts[3].trim();
-			String units = parts[4].trim();
-			String enrolled = parts[5].trim();
-			String waitlisted = parts[6].trim();
-			
-			JButton course = new JButton(title.toUpperCase() + "           Capcity:" + enrolled + "/" + capacity + "            Units: " + units);
-			
-			course.addActionListener(e -> {
-				showCourseDetails(title, description, professor, capacity, units, enrolled, waitlisted);
-			});
-			
-			course.setPreferredSize(new Dimension(900, 70));
-			
-			panel.add(course);
-		}
-		
-		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		return scrollPane;
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    panel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+	    panel.setBackground(new Color(245, 245, 220)); // parchment tone
+
+	    JPanel bannerPanel = new JPanel();
+	    bannerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+	    bannerPanel.setBackground(panel.getBackground());
+
+	    ImageIcon logoIcon = new ImageIcon("Images/hogwarts.png");
+	    Image img = logoIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+	    logoIcon = new ImageIcon(img);
+	    JLabel logoLabel = new JLabel(logoIcon);
+
+	    JLabel titleLabel = new JLabel("Course Catalog");
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+	    titleLabel.setForeground(new Color(102, 51, 0)); // deep brown
+
+	    bannerPanel.add(logoLabel);
+	    bannerPanel.add(Box.createRigidArea(new Dimension(15, 0)));
+	    bannerPanel.add(titleLabel);
+
+	    panel.add(bannerPanel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+	    Message textMsg = new Message(Type.GET_CATALOG, Status.NULL, "");
+	    try {
+	        out.writeObject(textMsg);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
+	    Message catalogResponse = null;
+	    try {
+	        catalogResponse = (Message) in.readObject();
+	    } catch (ClassNotFoundException | IOException e1) {
+	        e1.printStackTrace();
+	    }
+
+	    ArrayList<String> list = catalogResponse.getList();
+
+	    Font titleFont = new Font("Serif", Font.BOLD, 18);
+	    Font detailFont = new Font("Serif", Font.PLAIN, 16);
+
+	    for (String courseInfo : list) {
+	        String[] parts = courseInfo.split(",");
+	        String title = parts[0].trim();
+	        String description = parts[1].trim();
+	        String professor = parts[2].trim();
+	        String capacity = parts[3].trim();
+	        String units = parts[4].trim();
+	        String enrolled = parts[5].trim();
+	        String waitlisted = parts[6].trim();
+
+	        JPanel coursePanel = new JPanel(new BorderLayout(10, 10));
+	        coursePanel.setBackground(new Color(255, 253, 208));
+	        coursePanel.setBorder(BorderFactory.createCompoundBorder(
+	                BorderFactory.createLineBorder(new Color(160, 82, 45), 2),
+	                BorderFactory.createEmptyBorder(10, 15, 10, 15)
+	        ));
+	        coursePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+	        coursePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+	        coursePanel.addMouseListener(new MouseAdapter() {
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	                showCourseDetails(title, description, professor, capacity, units, enrolled, waitlisted);
+	            }
+
+	            @Override
+	            public void mouseEntered(MouseEvent e) {
+	                coursePanel.setBackground(new Color(255, 245, 180)); // hover effect
+	            }
+
+	            @Override
+	            public void mouseExited(MouseEvent e) {
+	                coursePanel.setBackground(new Color(255, 253, 208)); // revert
+	            }
+	        });
+
+	        JLabel courseTitleLabel = new JLabel(title.toUpperCase());
+	        courseTitleLabel.setFont(titleFont);
+	        courseTitleLabel.setForeground(new Color(102, 51, 0));
+
+	        JLabel detailsLabel = new JLabel("Professor: " + professor + " | Capacity: " + enrolled + "/" + capacity + " | Units: " + units);
+	        detailsLabel.setFont(detailFont);
+
+	        JPanel textPanel = new JPanel();
+	        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+	        textPanel.setBackground(coursePanel.getBackground());
+	        textPanel.add(courseTitleLabel);
+	        textPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+	        textPanel.add(detailsLabel);
+
+	        coursePanel.add(textPanel, BorderLayout.CENTER);
+	        panel.add(coursePanel);
+	        panel.add(Box.createRigidArea(new Dimension(0, 15)));
+	    }
+
+
+	    JScrollPane scrollPane = new JScrollPane(panel);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
+	    return scrollPane;
 	}
+
 
 	private void showCourseDetails(String title, String description, String professor, String capacity, String units, String enrolled, String waitlisted) {
 	    JDialog dialog = new JDialog(mainFrame, title, true);
 	    dialog.setSize(500, 450);
 	    dialog.setLocationRelativeTo(mainFrame);
 	    dialog.setLayout(new BorderLayout(10,10));
+	    dialog.getContentPane().setBackground(new Color(245, 245, 220)); // parchment background
 
+	    // -------------------------------
+	    // 🏰 Top Banner with Logo + Title
+	    // -------------------------------
+	    JPanel bannerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	    bannerPanel.setBackground(dialog.getContentPane().getBackground());
+
+	    ImageIcon logoIcon = new ImageIcon("Images/hogwarts.png");
+	    Image img = logoIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+	    logoIcon = new ImageIcon(img);
+	    JLabel logoLabel = new JLabel(logoIcon);
+
+	    JLabel titleLabel = new JLabel(title.toUpperCase());
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 22));
+	    titleLabel.setForeground(new Color(102, 51, 0)); // deep brown
+
+	    bannerPanel.add(logoLabel);
+	    bannerPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+	    bannerPanel.add(titleLabel);
+
+	    dialog.add(bannerPanel, BorderLayout.NORTH);
+
+	    // -------------------------------
+	    // 📘 Course Info Section
+	    // -------------------------------
 	    JPanel detailPanel = new JPanel();
-	    detailPanel.setLayout(new GridLayout(3,1,5,5));
-	    detailPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 50));
+	    detailPanel.setLayout(new BoxLayout(detailPanel, BoxLayout.Y_AXIS));
+	    detailPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+	    detailPanel.setBackground(dialog.getContentPane().getBackground());
 
-	    JLabel prof = new JLabel(professor.toUpperCase());
-	    JLabel desc = new JLabel("DESCRIPTION: " + description);
+	    JLabel profLabel = new JLabel("Professor: " + professor);
+	    profLabel.setFont(new Font("Serif", Font.PLAIN, 18));
+	    profLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JLabel descLabel = new JLabel("<html><body style='width:400px;'>Description: " + description + "</body></html>");
+	    descLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+	    descLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JLabel capLabel = new JLabel("Capacity: " + enrolled + "/" + capacity);
+	    capLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+	    capLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    JLabel unitLabel = new JLabel("Units: " + units);
+	    unitLabel.setFont(new Font("Serif", Font.PLAIN, 16));
+	    unitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 	    JButton enroll = new JButton("ENROLL");
+	    enroll.setFont(new Font("Serif", Font.BOLD, 16));
+	    enroll.setBackground(new Color(160, 82, 45));
+	    enroll.setForeground(Color.WHITE);
+	    enroll.setFocusPainted(false);
+	    enroll.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    enroll.setMaximumSize(new Dimension(150, 40));
 
-	    // Check if already enrolled and disable button
 	    if (enrolledCourseTitles.contains(title)) {
 	        enroll.setEnabled(false);
 	    }
@@ -609,91 +777,76 @@ public class StudentGUI {
 	        Message enrollRequest = new Message(Type.ENROLL_COURSE_STUDENT, Status.NULL, title);
 	        try {
 	            out.writeObject(enrollRequest);
-	            
-	            Message response = null;
-	            
-	            try {
-					response = (Message) in.readObject();
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}
-	            
+	            Message response = (Message) in.readObject();
+
 	            switch(response.getStatus()) {
-	            	
-	            case FAILED:
-	            	String failMessage = response.getText();
-	                JOptionPane.showMessageDialog(dialog, 
-	                    "Enrollment failed: " + failMessage, 
-	                    "Enrollment Error", 
-	                    JOptionPane.ERROR_MESSAGE);
-	            	break;
-	            	
-	            case SUCCESS:
-	            	
-	            	enrolledCourseTitles.add(title);
-	                enroll.setEnabled(false);
-	                JOptionPane.showMessageDialog(dialog, 
-	                    response.getText(), 
-	                    "Enrollment Success", 
-	                    JOptionPane.INFORMATION_MESSAGE);
-	                
-	                enrolledCourseTitles.add(title);
-
-		            enroll.setEnabled(false);
-
-		            Timer timer = new Timer(500, event -> dialog.dispose());
-		            timer.setRepeats(false);
-		            timer.start();
-	                
-	            	break;
-	            
+	                case FAILED:
+	                    JOptionPane.showMessageDialog(dialog, response.getText(), "Enrollment Error", JOptionPane.ERROR_MESSAGE);
+	                    break;
+	                case SUCCESS:
+	                    enrolledCourseTitles.add(title);
+	                    enroll.setEnabled(false);
+	                    JOptionPane.showMessageDialog(dialog, response.getText(), "Enrollment Success", JOptionPane.INFORMATION_MESSAGE);
+	                    dialog.dispose();
+	                    break;
+					default:
+						break;
 	            }
-	            
 
-	        } catch (IOException ex) {
+	        } catch (IOException | ClassNotFoundException ex) {
 	            ex.printStackTrace();
 	            JOptionPane.showMessageDialog(dialog, "Enrollment failed.", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
-	        
-	        SwingUtilities.invokeLater(() -> {
-    		    JScrollPane updatedHomePage = createHomePagePanel();
-    		    pagesPanel.add(updatedHomePage, "HOME");
-    		});
-	        
-	        SwingUtilities.invokeLater(() -> {
-            	
-                pagesPanel.remove(pagesPanel.getComponent(2));
 
-                JScrollPane updatedCatalogPage = createCourseCatalogPagePanel();
-                pagesPanel.add(updatedCatalogPage, "COURSE CATALOG");
-
-                CardLayout cl = (CardLayout) pagesPanel.getLayout();
-                cl.show(pagesPanel, "COURSE CATALOG");
-            });
+	        SwingUtilities.invokeLater(() -> pagesPanel.add(createHomePagePanel(), "HOME"));
+	        SwingUtilities.invokeLater(() -> refreshPage("COURSE CATALOG", createCourseCatalogPagePanel()));
 	    });
 
-	    detailPanel.add(prof);
-	    detailPanel.add(desc);
+	    // Add components to detailPanel
+	    detailPanel.add(profLabel);
+	    detailPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+	    detailPanel.add(descLabel);
+	    detailPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+	    detailPanel.add(capLabel);
+	    detailPanel.add(unitLabel);
+	    detailPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 	    detailPanel.add(enroll);
 
-	    dialog.add(detailPanel);
+	    dialog.add(detailPanel, BorderLayout.CENTER);
 	    dialog.setVisible(true);
 	}
+
 
 
 	private JPanel createProfilePagePanel() {
 	    JPanel panel = new JPanel();
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-	    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-	    
+	    panel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+	    panel.setBackground(new Color(245, 245, 220)); // Light parchment background
+
+	    // Hogwarts logo (assume "Images/hogwarts_logo.png" exists)
+	    ImageIcon logoIcon = new ImageIcon("Images/hogwarts.jpg");
+	    Image logo = logoIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+	    JLabel logoLabel = new JLabel(new ImageIcon(logo));
+	    logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(logoLabel);
+
+	    // Styled title
+	    JLabel titleLabel = new JLabel("My Profile");
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+	    titleLabel.setForeground(new Color(102, 51, 0)); // Dark gold/brown
+	    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    panel.add(titleLabel);
+	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+	    // Retrieve profile data
 	    Message msg = new Message(Type.PROFILE, Status.NULL, "");
-	    
 	    try {
-			out.writeObject(msg);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    
+	        out.writeObject(msg);
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+
 	    Message response = null;
 	    try {
 	        response = (Message) in.readObject();
@@ -704,82 +857,90 @@ public class StudentGUI {
 	    if (response == null || response.getStatus() == Status.FAILED) {
 	        JLabel errorLabel = new JLabel("Failed to load profile.");
 	        errorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+	        errorLabel.setForeground(Color.RED);
 	        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 	        panel.add(errorLabel);
 	        return panel;
 	    }
 
-	    
-	    String info = response.getText();
-	    
-	    String[] parts = info.split(",");
+	    String[] parts = response.getText().split(",");
 	    String name = parts[0];
 	    String phone = parts[2];
-	    // Title
-	    JLabel titleLabel = new JLabel("MY PROFILE");
-	    titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-	    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(titleLabel);
+
+	    // Info panel
+	    JPanel infoPanel = new JPanel();
+	    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+	    infoPanel.setBorder(BorderFactory.createTitledBorder("Student Information"));
+	    infoPanel.setBackground(new Color(250, 250, 235));
+
+	    infoPanel.add(makeProfileLine("Name: ", name));
+	    infoPanel.add(makeProfileLine("Phone: ", phone));
+	    infoPanel.add(makeProfileLine("Email: ", "[Not Available]"));
+	    panel.add(infoPanel);
 	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-	    // Student Name
-	    JLabel nameLabel = new JLabel("Name: " + name);
-	    nameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-	    nameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(nameLabel);
-	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
+	    // Enrolled courses
+	    JPanel coursePanel = new JPanel();
+	    coursePanel.setLayout(new BoxLayout(coursePanel, BoxLayout.Y_AXIS));
+	    coursePanel.setBorder(BorderFactory.createTitledBorder("Enrolled Courses"));
+	    coursePanel.setBackground(new Color(250, 250, 235));
 
-	    // Placeholder phone and email (you can wire real data later)
-	    JLabel phoneLabel = new JLabel("Phone: " + phone);
-	    phoneLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-	    phoneLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(phoneLabel);
-	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-	    JLabel emailLabel = new JLabel("Email: [Not Available]");
-	    emailLabel.setFont(new Font("Arial", Font.PLAIN, 18));
-	    emailLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(emailLabel);
-	    panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-	    // Enrolled Courses header
-	    JLabel coursesLabel = new JLabel("Enrolled Courses:");
-	    coursesLabel.setFont(new Font("Arial", Font.BOLD, 20));
-	    coursesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(coursesLabel);
-	    panel.add(Box.createRigidArea(new Dimension(0, 10)));
-
-	    // List of enrolled courses
 	    if (enrolledCourseTitles.isEmpty()) {
 	        JLabel noCoursesLabel = new JLabel("You are not enrolled in any courses.");
 	        noCoursesLabel.setFont(new Font("Arial", Font.ITALIC, 16));
 	        noCoursesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	        panel.add(noCoursesLabel);
+	        coursePanel.add(noCoursesLabel);
 	    } else {
-	        for (String courseTitle : enrolledCourseTitles) {
-	            JLabel courseLabel = new JLabel("- " + courseTitle);
+	        for (String course : enrolledCourseTitles) {
+	            JLabel courseLabel = new JLabel("- " + course);
 	            courseLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-	            courseLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	            panel.add(courseLabel);
-	            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+	            coursePanel.add(courseLabel);
+	            coursePanel.add(Box.createRigidArea(new Dimension(0, 5)));
 	        }
 	    }
 
+	    panel.add(coursePanel);
+
 	    return panel;
 	}
+
+	// Helper to create nicely formatted lines
+	private JPanel makeProfileLine(String label, String value) {
+	    JPanel line = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	    line.setOpaque(false);
+	    JLabel l1 = new JLabel(label);
+	    l1.setFont(new Font("Arial", Font.BOLD, 16));
+	    JLabel l2 = new JLabel(value);
+	    l2.setFont(new Font("Arial", Font.PLAIN, 16));
+	    line.add(l1);
+	    line.add(l2);
+	    return line;
+	}
+
 
 
 	private JScrollPane createHomePagePanel() {
 	    JPanel panel = new JPanel();
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-	    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	    panel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+	    panel.setBackground(new Color(245, 245, 220)); // parchment tone
 
-	    // Add the "MY SCHEDULE" label at the top
-	    JLabel headerLabel = new JLabel("MY SCHEDULE");
-	    headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-	    headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-	    panel.add(headerLabel);
-	    panel.add(Box.createRigidArea(new Dimension(0, 10))); // spacing below the label
+	    JPanel bannerPanel = new JPanel();
+	    bannerPanel.setLayout(new BoxLayout(bannerPanel, BoxLayout.X_AXIS));
+	    bannerPanel.setBackground(panel.getBackground());
+
+	    JLabel titleLabel = new JLabel("My Schedule");
+	    titleLabel.setFont(new Font("Serif", Font.BOLD, 28));
+	    titleLabel.setForeground(new Color(102, 51, 0));
+
+	    bannerPanel.add(Box.createHorizontalGlue());
+	    bannerPanel.add(titleLabel);
+	    bannerPanel.add(Box.createHorizontalGlue());
+	    bannerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40)); // limit vertical size
+
+	    panel.add(bannerPanel);
+	    panel.add(Box.createVerticalStrut(20));
+
 
 	    Message textMsg = new Message(Type.LIST_COURSES, Status.NULL, "");
 
@@ -798,8 +959,10 @@ public class StudentGUI {
 
 	    ArrayList<String> list = listResponse.getList();
 
-	    for (String courseInfo : list) {
+	    Font titleFont = new Font("Serif", Font.BOLD, 18);
+	    Font detailFont = new Font("Serif", Font.PLAIN, 16);
 
+	    for (String courseInfo : list) {
 	        String[] parts = courseInfo.split(",");
 	        String title = parts[0].trim();
 	        String description = parts[1].trim();
@@ -809,23 +972,52 @@ public class StudentGUI {
 	        String enrolled = parts[5].trim();
 	        String waitlisted = parts[6].trim();
 
-	        JButton course = new JButton(title.toUpperCase() + "           Capacity:" + enrolled + "/" + capacity + "            Units: " + units);
+	        JPanel coursePanel = new JPanel(new BorderLayout(10, 10));
+	        coursePanel.setBackground(new Color(255, 253, 208)); // lighter parchment
+	        coursePanel.setBorder(BorderFactory.createCompoundBorder(
+	            BorderFactory.createLineBorder(new Color(160, 82, 45), 2),
+	            BorderFactory.createEmptyBorder(10, 15, 10, 15)
+	        ));
 
-	        course.addActionListener(e -> {
-	            showListDetails(title, description, professor, capacity, units, enrolled, waitlisted);
+	        JLabel courseTitleLabel = new JLabel(title.toUpperCase());
+	        courseTitleLabel.setFont(titleFont);
+	        courseTitleLabel.setForeground(new Color(102, 51, 0));
+
+	        JLabel detailsLabel = new JLabel("Professor: " + professor + " | Enrolled: " + enrolled + "/" + capacity + " | Units: " + units);
+	        detailsLabel.setFont(detailFont);
+
+	        JPanel textPanel = new JPanel();
+	        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+	        textPanel.setBackground(coursePanel.getBackground());
+	        textPanel.add(courseTitleLabel);
+	        textPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+	        textPanel.add(detailsLabel);
+
+	        coursePanel.add(textPanel, BorderLayout.CENTER);
+
+	        coursePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
+
+	        // Make the whole course panel clickable
+	        coursePanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	        coursePanel.addMouseListener(new MouseAdapter() {
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	                showListDetails(title, description, professor, capacity, units, enrolled, waitlisted);
+	            }
 	        });
 
-	        course.setMaximumSize(new Dimension(900, 70));
-	        panel.add(course);
-	        panel.add(Box.createRigidArea(new Dimension(0, 5))); // spacing between buttons
+	        panel.add(coursePanel);
+	        panel.add(Box.createRigidArea(new Dimension(0, 15)));
 	    }
 
 	    JScrollPane scrollPane = new JScrollPane(panel);
 	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 	    return scrollPane;
 	}
+
 
 
 	private void showListDetails(String title, String description, String professor, String capacity, String units, String enrolled, String waitlisted) {
@@ -871,13 +1063,9 @@ public class StudentGUI {
 	        }
 	        
 	        SwingUtilities.invokeLater(() -> {
-            	
-                pagesPanel.remove(pagesPanel.getComponent(2));
-
-                JScrollPane updatedCatalogPage = createCourseCatalogPagePanel();
-                pagesPanel.add(updatedCatalogPage, "COURSE CATALOG");
-            });
-	        
+	            JScrollPane updatedCatalogPage = createCourseCatalogPagePanel();
+	            refreshPage("COURSE CATALOG", updatedCatalogPage);
+	        }); 
 	    });
 
 	    detailPanel.add(prof);
@@ -887,6 +1075,25 @@ public class StudentGUI {
 	    dialog.add(detailPanel);
 	    dialog.setVisible(true);
 	}
+	
+	private void refreshPage(String pageName, Component newPageContent) {
+	    CardLayout layout = (CardLayout) pagesPanel.getLayout();
+
+	    Component[] components = pagesPanel.getComponents();
+	    for (Component comp : components) {
+	        if (pageName.equals(comp.getName())) {
+	            pagesPanel.remove(comp);
+	            break;
+	        }
+	    }
+
+	    newPageContent.setName(pageName);
+	    pagesPanel.add(newPageContent, pageName);
+	    pagesPanel.revalidate();
+	    pagesPanel.repaint();
+	}
+
+
 
 
 	private JPanel CreateAdminAppPanel(CardLayout cardLayout, JPanel cardPanel) {
