@@ -225,12 +225,12 @@ public class StudentGUI {
 	            JOptionPane.showMessageDialog(panel, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-
-	        String student = userName + "," + password;
-	        Message textMsg = new Message(Type.LOGIN, Status.NULL, UserType.STUDENT, student);
-
 	        try {
-	            out.writeObject(textMsg);
+	            // Correct message construction
+	            String student = userName + "," + password;
+	            Message loginMsg = new Message(Type.LOGIN, Status.NULL, UserType.STUDENT, student);
+	            out.writeObject(loginMsg);
+
 	            Message loginResponse = (Message) in.readObject();
 
 	            switch (loginResponse.getStatus()) {
@@ -240,7 +240,7 @@ public class StudentGUI {
 	                        enrolledCourseTitles = new ArrayList<>(loginResponse.getList());
 	                    }
 
-	                    JOptionPane.showMessageDialog(panel, "Welcome back, " + userName + "!", "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
+	                    JOptionPane.showMessageDialog(panel, "Welcome Back " + userName, "Hogwarts", JOptionPane.INFORMATION_MESSAGE);
 
 	                    if (loginResponse.getUserType() == UserType.ADMIN) {
 	                        cardLayout.show(cardPanel, "ADMINAPP");
@@ -254,21 +254,26 @@ public class StudentGUI {
 	                    break;
 
 	                case FAILED:
-	                    JOptionPane.showMessageDialog(panel, loginResponse.getText(), "Hogwarts", JOptionPane.ERROR_MESSAGE);
+	                    JOptionPane.showMessageDialog(panel, loginResponse.getText(), "Login Failed", JOptionPane.ERROR_MESSAGE);
 	                    break;
 
 	                default:
-	                    System.out.println("Unknown message type received.");
-	                    break;
+	                    System.out.println("Unknown login response status.");
 	            }
 
-	        } catch (Exception ex) {
+	        } catch (IOException | ClassNotFoundException ex) {
 	            ex.printStackTrace();
-	            JOptionPane.showMessageDialog(panel, "An error occurred during login.", "Error", JOptionPane.ERROR_MESSAGE);
-	        }
+	            JOptionPane.showMessageDialog(panel, "Error communicating with server.", "Error", JOptionPane.ERROR_MESSAGE);	        }
 	    });
-
-	    return panel;
+	    
+	    detailPanel.add(userNamePanel);
+	    detailPanel.add(passwordPanel);
+	    detailPanel.add(buttons);
+	    
+	    panel.add(detailPanel, BorderLayout.EAST);
+        panel.add(imageLabel, BorderLayout.WEST);
+    	
+		return panel;
 	}
 
 	private void styleHogwartsButton(JButton button) {
@@ -523,9 +528,71 @@ public class StudentGUI {
 
     
     private JPanel createBalancePagePanel() {
-    	JPanel panel = new JPanel();
-		return panel;
-	}
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel balanceLabel = new JLabel("Fetching your balance...");
+        balanceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(balanceLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // Request current balance
+        try {
+            Message request = new Message(Type.VIEW_BALANCE, Status.NULL, UserType.STUDENT, "");
+            out.writeObject(request);
+            Message response = (Message) in.readObject();
+            if (response.getStatus() == Status.SUCCESS) {
+                balanceLabel.setText("Current Balance: $" + response.getText());
+            } else {
+                balanceLabel.setText("Could not fetch balance.");
+            }
+        } catch (Exception e) {
+            balanceLabel.setText("Error retrieving balance.");
+            e.printStackTrace();
+        }
+
+        JLabel payLabel = new JLabel("Enter Amount to Pay:");
+        payLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(payLabel);
+
+        JTextField amountField = new JTextField();
+        amountField.setMaximumSize(new Dimension(200, 30));
+        panel.add(amountField);
+
+        JButton payButton = new JButton("Pay Now");
+        payButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(payButton);
+
+        payButton.addActionListener(e -> {
+            String amountText = amountField.getText().trim();
+            try {
+                double payment = Double.parseDouble(amountText);
+                Message paymentMsg = new Message(Type.PAY_BALANCE, Status.NULL, UserType.STUDENT, String.valueOf(payment));
+                out.writeObject(paymentMsg);
+
+                Message response;
+                try {
+                    response = (Message) in.readObject();
+                    if (response.getStatus() == Status.SUCCESS) {
+                        JOptionPane.showMessageDialog(panel, "Payment successful. Remaining balance: $" + response.getText());
+                        balanceLabel.setText("Current Balance: $" + response.getText());
+                    } else {
+                        JOptionPane.showMessageDialog(panel, "Payment failed: " + response.getText());
+                    }
+                } catch (ClassNotFoundException | IOException ex) {
+                    ex.printStackTrace();
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Please enter a valid amount.");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        return panel;
+    }
+
 
 	private JPanel createHoldPagePanel() {
 		JPanel panel = new JPanel();
@@ -1044,40 +1111,54 @@ public class StudentGUI {
     	JPanel appContainer = new JPanel(new BorderLayout(10, 10));
 
     	JPanel operationsPanel = new JPanel();
-    	operationsPanel.setLayout(new GridLayout(8, 1, 1, 1));
-        Font buttonFont = new Font("Arial", Font.PLAIN, 18);
+    	operationsPanel.setLayout(new GridLayout(0, 1, 10, 10)); // single column, vertical stack
+    	operationsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // padding around the panel
+    	operationsPanel.setPreferredSize(new Dimension(400, 0)); // fixes width for full vertical layout
+
+    	Font buttonFont = new Font("Arial", Font.BOLD, 16);
 
     	JButton createCourseButton = new JButton("Create Course");
     	createCourseButton.setFont(buttonFont);
-    	createCourseButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton removeCourseButton = new JButton("Remove Course");
     	removeCourseButton.setFont(buttonFont);
-    	removeCourseButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton dropStudentFromCourseButton = new JButton("Drop Student From Course");
     	dropStudentFromCourseButton.setFont(buttonFont);
-    	dropStudentFromCourseButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton enrollStudentToCourseButton = new JButton("Enroll Student To Course");
     	enrollStudentToCourseButton.setFont(buttonFont);
-    	enrollStudentToCourseButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton addHoldButton = new JButton("Add Student Hold");
     	addHoldButton.setFont(buttonFont);
-    	addHoldButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton removeHoldButton = new JButton("Remove Student Hold");
     	removeHoldButton.setFont(buttonFont);
-    	removeHoldButton.setPreferredSize(new Dimension(500, 40));
-    	
+
     	JButton viewAllStudents = new JButton("View All Students");
     	viewAllStudents.setFont(buttonFont);
-    	viewAllStudents.setPreferredSize(new Dimension(500, 40));
-    	
+
+    	JButton assignPaymentButton = new JButton("Assign Payment");
+    	assignPaymentButton.setFont(buttonFont);
+
     	JButton generateReportButton = new JButton("Generate Report");
     	generateReportButton.setFont(buttonFont);
-    	generateReportButton.setPreferredSize(new Dimension(500, 40));
+
+    	JButton logoutButton = new JButton("Log Out");
+    	logoutButton.setFont(buttonFont);
+
+    	// Add buttons to the panel
+    	operationsPanel.add(createCourseButton);
+    	operationsPanel.add(removeCourseButton);
+    	operationsPanel.add(dropStudentFromCourseButton);
+    	operationsPanel.add(enrollStudentToCourseButton);
+    	operationsPanel.add(addHoldButton);
+    	operationsPanel.add(removeHoldButton);
+    	operationsPanel.add(viewAllStudents);
+    	operationsPanel.add(assignPaymentButton);
+    	operationsPanel.add(generateReportButton);
+    	operationsPanel.add(logoutButton);
+
     	
     	operationsPanel.add(createCourseButton, BorderLayout.WEST);
     	operationsPanel.add(removeCourseButton, BorderLayout.WEST);
@@ -1086,6 +1167,7 @@ public class StudentGUI {
     	operationsPanel.add(addHoldButton, BorderLayout.WEST);
     	operationsPanel.add(removeHoldButton, BorderLayout.WEST);
     	operationsPanel.add(viewAllStudents, BorderLayout.WEST);
+    	operationsPanel.add(assignPaymentButton, BorderLayout.WEST);
     	operationsPanel.add(generateReportButton, BorderLayout.WEST);
     	
     	CardLayout pagesLayout = new CardLayout();
@@ -1098,6 +1180,7 @@ public class StudentGUI {
         JPanel addHoldPage = addHoldPanel();
         JPanel removeHoldPage = removeHoldPanel();
         JPanel viewStudentsPage = viewStudentsPanel();
+        JPanel assignPaymentPage = assignPaymentPanel();
         JPanel reportPage = reportPanel();
 
         pagesPanel.add(createCoursePage, "CREATE COURSE");
@@ -1107,6 +1190,7 @@ public class StudentGUI {
         pagesPanel.add(addHoldPage, "ADD HOLD");
         pagesPanel.add(removeHoldPage, "REMOVE HOLD");
         pagesPanel.add(viewStudentsPage, "VIEW STUDENTS");
+        pagesPanel.add(assignPaymentPage, "ASSIGN PAYMENT");
         pagesPanel.add(reportPage, "REPORTS");
     	
         // action listeners
@@ -1117,6 +1201,7 @@ public class StudentGUI {
         addHoldButton.addActionListener(e -> pagesLayout.show(pagesPanel, "ADD HOLD"));
         removeHoldButton.addActionListener(e -> pagesLayout.show(pagesPanel, "REMOVE HOLD"));
         viewAllStudents.addActionListener(e -> pagesLayout.show(pagesPanel, "VIEW STUDENTS"));
+        assignPaymentButton.addActionListener(e -> pagesLayout.show(pagesPanel, "ASSIGN PAYMENT"));
         generateReportButton.addActionListener(e -> pagesLayout.show(pagesPanel, "REPORTS"));
 
     	appContainer.add(operationsPanel, BorderLayout.WEST);
@@ -1304,6 +1389,56 @@ public class StudentGUI {
 		JButton btn = new JButton("view students btn");
 		panel.add(btn);
 		return panel;
+	}
+	
+	// Added payment panel
+	private JPanel assignPaymentPanel() {
+	    JPanel panel = new JPanel();
+	    panel.setLayout(new GridLayout(4, 1, 10, 10));
+	    panel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
+
+	    JTextField studentNameField = new JTextField(20);
+	    JTextField amountField = new JTextField(20);
+	    JButton assignButton = new JButton("Assign Payment");
+
+	    panel.add(new JLabel("Student Name:"));
+	    panel.add(studentNameField);
+	    panel.add(new JLabel("Amount to Pay:"));
+	    panel.add(amountField);
+	    panel.add(assignButton);
+
+	    assignButton.addActionListener(e -> {
+	        String studentName = studentNameField.getText().trim();
+	        String amountText = amountField.getText().trim();
+
+	        if (studentName.isEmpty() || amountText.isEmpty()) {
+	            JOptionPane.showMessageDialog(panel, "Please fill in all fields.");
+	            return;
+	        }
+
+	        try {
+	            double amount = Double.parseDouble(amountText);
+	            String content = studentName + "," + amount;
+
+	            Message msg = new Message(Type.PAY_BALANCE, Status.NULL, UserType.ADMIN, content); // ✅ Fix here
+	            out.writeObject(msg);
+
+	            Message response = (Message) in.readObject();
+	            if (response.getStatus() == Status.SUCCESS) {
+	                JOptionPane.showMessageDialog(panel, response.getText(), "Success", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(panel, response.getText(), "Failed", JOptionPane.ERROR_MESSAGE);
+	            }
+
+	        } catch (NumberFormatException ex) {
+	            JOptionPane.showMessageDialog(panel, "Invalid amount.");
+	        } catch (IOException | ClassNotFoundException ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(panel, "Communication error.");
+	        }
+	    });
+
+	    return panel;
 	}
 	
 	private JPanel reportPanel() {

@@ -14,6 +14,7 @@ public class Student extends User {
     public Student(String name, String password, long phoneNumber) {
         super(name, password);
         this.phoneNumber = phoneNumber;
+        this.balance = 0.0;
     }
 	
 	public Role getRole() {
@@ -107,7 +108,8 @@ public class Student extends User {
             }
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(folder + name));
-            writer.write(name + "," + password + "," + phoneNumber);
+            // ✅ Save balance with the first line
+            writer.write(name + "," + password + "," + phoneNumber + "," + balance);
             writer.newLine();
 
             for (Course course : enrolledCourses) {

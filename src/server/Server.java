@@ -156,6 +156,19 @@ class Server {
 	                    case VIEW_STUDENTS:
 	                    	//viewStudents(message);
 	                    	break;
+	                    
+	                    case VIEW_BALANCE:
+	                        handleViewBalance();
+	                        break;
+
+	                    case PAY_BALANCE:
+	                        if (message.getUserType() == UserType.ADMIN) {
+	                            assignPayment(message);  // Admin assigns a balance
+	                        } else if (message.getUserType() == UserType.STUDENT) {
+	                            handleStudentPayment(message);  // Student pays balance
+	                        }
+	                        break;
+	                        
 	                    case REPORT:
 	                    	report();
 	                    	break;
@@ -334,9 +347,20 @@ class Server {
 		            String storedName = fileParts[0].trim();
 		            String storedPassword = fileParts[1].trim();
 		            // String storedPhone = fileParts[2].trim();  // optional, you can use this later
+		            double storedBalance = 0.0;
+		            if (fileParts.length >= 4) {
+		                try {
+		                    storedBalance = Double.parseDouble(fileParts[3].trim());
+		                } catch (NumberFormatException e) {
+		                    storedBalance = 0.0; // fallback
+		                }
+		            }
 
 		            if (password.equals(storedPassword)) {
 		            	currentStudent = uni.getStudentByName(storedName);
+		            	if (currentStudent != null) {
+		            	    currentStudent.setBalance(storedBalance);  // ✅ Set the balance loaded from file
+		            	}
 		            	System.out.println("Login successful.");
 		            	// So when someone logs in, it will log it in the txt file.
 		            	ReportLogger.logSystemEvent(storedName + " logged in.");
@@ -542,6 +566,112 @@ class Server {
 			}
 		}
 		
+		private void handleStudentPayment(Message message) {
+		    try {
+		        double amountPaid = Double.parseDouble(message.getText());
+		        if (currentStudent == null) {
+		            out.writeObject(new Message(Type.PAY_BALANCE, Status.FAILED, "No student logged in."));
+		            return;
+		        }
+
+		        double before = currentStudent.getBalance();
+		        currentStudent.applyPayment(amountPaid);
+		        double after = currentStudent.getBalance();
+
+		        ReportLogger.logSystemEvent(currentStudent.getName() + " paid $" + amountPaid + ". Remaining balance: $" + after);
+
+		        currentStudent.save();
+
+		        out.writeObject(new Message(Type.PAY_BALANCE, Status.SUCCESS, String.valueOf(after)));
+		    } catch (Exception e) {
+		        try {
+		            out.writeObject(new Message(Type.PAY_BALANCE, Status.FAILED, "Invalid payment amount."));
+		        } catch (IOException ioException) {
+		            ioException.printStackTrace();
+		        }
+		        e.printStackTrace();
+		    }
+		}
+		
+		private void assignPayment(Message message) {
+		    String[] data = message.getText().split(",");
+		    if (data.length != 2) {
+		        System.out.println("Invalid payment message format.");
+		        Message error = new Message(Type.PAY_BALANCE, Status.FAILED, "Invalid format. Use: studentName,amount");
+		        try {
+		            out.writeObject(error);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return;
+		    }
+
+		    String studentName = data[0].trim();
+		    double amount;
+
+		    try {
+		        amount = Double.parseDouble(data[1].trim());
+		    } catch (NumberFormatException e) {
+		        System.out.println("Invalid amount format.");
+		        Message error = new Message(Type.PAY_BALANCE, Status.FAILED, "Invalid amount entered.");
+		        try {
+		            out.writeObject(error);
+		        } catch (IOException ex) {
+		            ex.printStackTrace();
+		        }
+		        return;
+		    }
+
+		    Student student = uni.getStudentByName(studentName);
+		    if (student == null) {
+		        Message error = new Message(Type.PAY_BALANCE, Status.FAILED, "Student not found.");
+		        try {
+		            out.writeObject(error);
+		        } catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        return;
+		    }
+
+		    student.setBalance(amount);
+		    student.save();
+
+		    ReportLogger.logSystemEvent("Assigned $" + amount + " payment to " + studentName);
+
+		    Message success = new Message(Type.PAY_BALANCE, Status.SUCCESS, "Assigned $" + amount + " to " + studentName);
+		    try {
+		        out.writeObject(success);
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		}
+		
+		// Added these 2 so users can view and pay balance
+		private void handleViewBalance() throws IOException {
+		    if (currentStudent == null) {
+		        Message error = new Message(Type.VIEW_BALANCE, Status.FAILED, "No student logged in.");
+		        out.writeObject(error);
+		        return;
+		    }
+
+		    double balance = currentStudent.getBalance();
+		    Message response = new Message(Type.VIEW_BALANCE, Status.SUCCESS, String.valueOf(balance));
+		    out.writeObject(response);
+		}
+
+
+		private void handlePayBalance(Message message) throws IOException {
+		    double amount = Double.parseDouble(message.getText());
+		    currentStudent.applyPayment(amount);
+		    currentStudent.save();
+
+		    Payment payment = new Payment(amount, currentStudent.getName());
+		    ReportLogger.logSystemEvent(payment.toString());
+
+		    Message response = new Message(Type.PAY_BALANCE, Status.SUCCESS, "Payment of $" + amount + " processed.");
+		    out.writeObject(response);
+		}
+		
 		private void report() {
 		    Message reportMessage;
 
@@ -582,6 +712,7 @@ class Server {
 		    }
 		}
 	}
+	
 	
 	public static void initializeCourses() {
 	    ArrayList<Course> courses = new ArrayList<>();
